@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:garsonapp/widgets/my_textbox.dart';
 
@@ -13,19 +12,20 @@ class GirisSayfasi extends StatefulWidget {
 class _GirisSayfasiState extends State<GirisSayfasi> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
         child: Column(
           children: [
-            SizedBox(
-              height: 400,
-            ),
-            MyTextBox(),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
-            MyTextBox(),
+            Image.asset('assets/garson_logo.png', height: 300),
+            const MyTextBox(hintTextYazi: "Kullancı Adı"),
+            const SizedBox(
+              height: 50,
+            ),
+            const MyTextBox(hintTextYazi: "Parola"),
           ],
         ),
       ),

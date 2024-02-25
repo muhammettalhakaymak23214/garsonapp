@@ -22,18 +22,22 @@ class CustomButton extends StatelessWidget {
 }
 */
 class MyTextBox extends StatelessWidget {
-  const MyTextBox({super.key});
+  final String hintTextYazi;
+  const MyTextBox({required this.hintTextYazi});
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search),
-        suffixIcon: Icon(Icons.clear),
-        labelText: 'Filled',
-        hintText: 'hint text',
-        helperText: 'supporting text',
-        filled: true,
+    return Container(
+      width: 350,
+      // height: 60,
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: hintTextYazi,
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+        ),
       ),
     );
   }
