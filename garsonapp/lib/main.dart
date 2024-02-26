@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 import 'package:garsonapp/sayfalar/giris_sayfasi.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const GirisSayfasi(),
+      home: const AnaSayfa(),
     );
   }
 }
