@@ -180,7 +180,8 @@ class _AnaSayfaState extends State<AnaSayfa> {
                     alignment: Alignment.center,
                     child: const Text(
                       "MASALAR",
-                      style: TextStyle(fontSize: 20),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -227,9 +228,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
                                 (myMap.keys.elementAt(index))
                                     .toString(), // Sayıları ekrana yazdırıyoruz
                                 style: const TextStyle(
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 20,
-                                ),
+                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           );
@@ -273,7 +274,8 @@ class _AnaSayfaState extends State<AnaSayfa> {
                     alignment: Alignment.center,
                     child: const Text(
                       "SİPARİŞLER",
-                      style: TextStyle(fontSize: 20),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -305,7 +307,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           decoration: BoxDecoration(
@@ -343,11 +345,12 @@ class _AnaSayfaState extends State<AnaSayfa> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 30),
+                        const SizedBox(width: 35),
                         Container(
-                          height: 30,
-                          width: 30,
-                          alignment: Alignment.center,
+                          // color: Colors.black,
+                          height: 50,
+                          width: 50,
+                          //alignment:
                           child: IconButton(
                             onPressed: () {
                               // Butona basıldığında yapılacak işlemler buraya yazılır
