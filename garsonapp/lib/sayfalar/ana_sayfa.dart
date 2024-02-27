@@ -8,37 +8,31 @@ class AnaSayfa extends StatefulWidget {
 }
 
 class _AnaSayfaState extends State<AnaSayfa> {
-  final List<String> myList = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-    "25",
-    "26",
-    "27",
-    "28",
-    "29",
-  ];
+  Map<int, bool> myMap = {
+    0: true,
+    1: true,
+    2: false,
+    3: false,
+    4: false,
+    5: true,
+    6: false,
+    7: true,
+    8: true,
+    9: true,
+    10: true,
+    11: true,
+    12: false,
+    13: true,
+    14: false,
+    15: false,
+    16: false,
+    17: false,
+    18: true,
+    19: true,
+    20: false,
+    // Diğer anahtar-değer çiftleri buraya eklenir...
+  };
+
   int startIndex = 0;
 
   @override
@@ -115,53 +109,55 @@ class _AnaSayfaState extends State<AnaSayfa> {
                     flex: 1,
                     child: Container(
                       width: 50,
-                    ))
+                    )),
               ],
             ),
             Container(
               width: 350,
               height: 280,
-              //color: Colors.amber,
-              //alignment: Alignment.topCenter,
               child: ListView.builder(
-                itemCount: (myList.length / 5).ceil(), // Satır sayısı
+                itemCount: (myMap.length / 5).ceil(), // Satır sayısı
                 itemBuilder: (BuildContext context, int rowIndex) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    //crossAxisAlignment: CrossAxisAlignment.start,
                     children: List.generate(
                       5,
                       (int columnIndex) {
                         final index = rowIndex * 5 + columnIndex;
-                        if (index < myList.length) {
+                        final mapValue = myMap[index];
+                        if (index < myMap.length) {
                           return GestureDetector(
                             onTap: () {
                               // Container tıklandığında yapılacak işlemler
-                              print(index + 1);
+                              // print(index + 1 + );
+                              print(
+                                  'Key: ${myMap.keys.elementAt(index)}, Value: ${mapValue != null ? (mapValue ? 'true' : 'false') : 'null'}');
                             },
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: const Color.fromARGB(255, 255, 255, 255),
+                                color: mapValue != null && mapValue
+                                    ? Color.fromARGB(255, 0, 255, 4)
+                                    : Color.fromARGB(255, 255, 255, 255),
                               ),
-
                               height: 50,
                               width: 50,
                               margin: const EdgeInsets.all(10.0),
-                              //  padding: const EdgeInsets.all(20.0),
                               alignment: Alignment.center,
                               child: Text(
-                                myList[index],
+                                (myMap.keys.elementAt(index))
+                                    .toString(), // Sayıları ekrana yazdırıyoruz
                                 style: const TextStyle(
-                                    color: Color.fromRGBO(51, 51, 51, 100),
-                                    fontSize: 20),
+                                  color: Color.fromRGBO(0, 0, 0, 1),
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                           );
                         } else {
                           return Container(
-                            height: 50,
-                            width: 50,
+                            height: 60,
+                            width: 60,
                             margin: const EdgeInsets.all(5.0),
                           ); // Eksik elemanlar için boş Container
                         }
@@ -179,19 +175,35 @@ class _AnaSayfaState extends State<AnaSayfa> {
               indent: 20, // Çizginin başlangıç boşluğu
               endIndent: 20, // Çizginin bitiş boşluğu
             ),
-            Container(
-              margin: EdgeInsets.all(0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.white),
-              //color: Colors.amber,
-              height: 40,
-              width: 150,
-              alignment: Alignment.center,
-              child: const Text(
-                "Siparişler",
-                style: TextStyle(),
-              ),
+            Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                      width: 50,
+                    )),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                        color: Colors.white),
+                    //color: Colors.amber,
+                    height: 40,
+                    width: 190,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "SİPARİŞLER",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                      width: 50,
+                    )),
+              ],
             ),
           ],
         ),
@@ -200,6 +212,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
   }
 }
 /*
+------------------------------------
+Ekran genişliği : 411.42857142857144
+------------------------------------
 Container(
                   padding: const EdgeInsets.all(0),
                   width: 250,
@@ -307,3 +322,120 @@ Container(
                   ),
                 ),
                 */
+
+                /*
+
+                mylist kullanılarak yapılan son yapı daha sonra mymap'e geçtim
+                 Container(
+              width: 350,
+              height: 280,
+              //color: Colors.amber,
+              //alignment: Alignment.topCenter,
+              child: ListView.builder(
+                itemCount: (myList.length / 5).ceil(), // Satır sayısı
+                itemBuilder: (BuildContext context, int rowIndex) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      5,
+                      (int columnIndex) {
+                        final index = rowIndex * 5 + columnIndex;
+                        if (index < myList.length) {
+                          return GestureDetector(
+                            onTap: () {
+                              // Container tıklandığında yapılacak işlemler
+                              print(index + 1);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+
+                              height: 50,
+                              width: 50,
+                              margin: const EdgeInsets.all(10.0),
+                              //  padding: const EdgeInsets.all(20.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                myList[index],
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(51, 51, 51, 100),
+                                    fontSize: 20),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            height: 60,
+                            width: 60,
+                            margin: const EdgeInsets.all(5.0),
+                          ); // Eksik elemanlar için boş Container
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+            */
+
+
+            /*
+
+/*
+  final List<String> myList = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+  ];
+  */
+
+            */
+
+            /*
+//---------------
+            Container(
+              margin: EdgeInsets.all(0),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.white),
+              //color: Colors.amber,
+              height: 40,
+              width: 150,
+              alignment: Alignment.center,
+              child: const Text(
+                "Siparişler",
+                style: TextStyle(),
+              ),
+            ),
+
+
+            */

@@ -1,0 +1,53 @@
+ Container(
+              width: 350,
+              height: 280,
+              //color: Colors.amber,
+              //alignment: Alignment.topCenter,
+              child: ListView.builder(
+                itemCount: (myList.length / 5).ceil(), // Satır sayısı
+                itemBuilder: (BuildContext context, int rowIndex) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      5,
+                      (int columnIndex) {
+                        final index = rowIndex * 5 + columnIndex;
+                        if (index < myList.length) {
+                          return GestureDetector(
+                            onTap: () {
+                              // Container tıklandığında yapılacak işlemler
+                              print(index + 1);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+
+                              height: 50,
+                              width: 50,
+                              margin: const EdgeInsets.all(10.0),
+                              //  padding: const EdgeInsets.all(20.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                myList[index],
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(51, 51, 51, 100),
+                                    fontSize: 20),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            height: 60,
+                            width: 60,
+                            margin: const EdgeInsets.all(5.0),
+                          ); // Eksik elemanlar için boş Container
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
