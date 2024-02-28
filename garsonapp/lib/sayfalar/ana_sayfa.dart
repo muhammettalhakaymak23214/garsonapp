@@ -116,7 +116,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
         child: Column(
           children: [
             const SizedBox(
-              height: 40,
+              height: 50,
             ),
             Row(
               // mainAxisAlignment: MainAxisAlignment.start,
