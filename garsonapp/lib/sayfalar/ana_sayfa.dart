@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:garsonapp/sabitler/renkler.dart';
+import 'package:garsonapp/sabitler/text_style.dart';
 
 // Timer'ı sınıfın dışında tanımlayın ki dispose işlevi içinde kullanabilelim
 late Timer _timer;
@@ -131,7 +132,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
             const SizedBox(
               height: 50,
             ),
-
             Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
@@ -141,13 +141,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
               alignment: Alignment.center,
               child: Text(
                 "MASALAR",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: siyahYaziRengi),
+                style: baslikTextStyle,
               ),
             ),
-
             Container(
               width: 350,
               height: 280,
@@ -183,10 +179,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                               child: Text(
                                 (myMap.keys.elementAt(index))
                                     .toString(), // Sayıları ekrana yazdırıyoruz
-                                style: TextStyle(
-                                    color: siyahYaziRengi,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                                style: baslikTextStyle,
                               ),
                             ),
                           );
@@ -211,7 +204,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
               indent: 20, // Çizginin başlangıç boşluğu
               endIndent: 20, // Çizginin bitiş boşluğu
             ),
-
             Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
@@ -222,13 +214,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
               alignment: Alignment.center,
               child: Text(
                 "SİPARİŞLER",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: siyahYaziRengi),
+                style: baslikTextStyle,
               ),
             ),
-
             Container(
               width: 350,
               height: 400,
@@ -261,9 +249,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           height: 30,
                           child: Text(
                             'Masa: $key',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: siyahYaziRengi),
+                            style: containerTextStyle,
                           ),
                         ),
                         const SizedBox(width: 5), //85
@@ -279,10 +265,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           height: 30,
                           child: Text(
                             '$value',
-                            style: TextStyle(
-                              color: siyahYaziRengi,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: containerTextStyle,
                           ),
                         ),
                         const SizedBox(width: 35),
@@ -298,7 +281,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
                               },
                               icon: const Icon(Icons.clear), // Çarpı ikonu
                               iconSize: 30, // İkon boyutu
-
                               color: ikonRengi // İkon rengi
                               ),
                         ),
@@ -308,7 +290,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 },
               ),
             ),
-            //),
           ],
         ),
       ),
