@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:garsonapp/sabitler/boxDecoreation.dart';
 import 'dart:async';
 
 import 'package:garsonapp/sabitler/renkler.dart';
@@ -123,7 +124,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: arkaPlanRengi,
       body: Center(
@@ -133,9 +133,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
               height: 50,
             ),
             Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: beyazContainerRengi),
+              decoration: boxDecoreation,
               height: 40,
               width: 350,
               alignment: Alignment.center,
@@ -205,10 +203,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
               endIndent: 20, // Çizginin bitiş boşluğu
             ),
             Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: beyazContainerRengi),
-              //color: Colors.amber,
+              decoration: boxDecoreation,
               height: 40,
               width: 350,
               alignment: Alignment.center,
@@ -239,10 +234,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          decoration: BoxDecoration(
-                            color: beyazContainerRengi,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
+                          decoration: boxDecoreation,
                           margin: const EdgeInsets.all(5),
                           alignment: Alignment.center,
                           width: 80,
@@ -254,11 +246,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                         ),
                         const SizedBox(width: 5), //85
                         Container(
-                          decoration: BoxDecoration(
-                            color: beyazContainerRengi,
-                            //border: Border.all(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
+                          decoration: boxDecoreation,
                           margin: const EdgeInsets.all(5),
                           alignment: Alignment.center,
                           width: 150,
