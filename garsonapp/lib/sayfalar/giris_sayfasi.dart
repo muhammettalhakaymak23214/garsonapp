@@ -1,5 +1,6 @@
 //import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 
 class GirisSayfasi extends StatefulWidget {
@@ -18,7 +19,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
 
   //
   Color butonColor = const Color.fromARGB(255, 255, 255, 255);
-  Color butonYaziRengi = const Color.fromARGB(255, 0, 0, 0);
+  Color butonYaziRengi = siyahYaziRengi;
   //
 
   @override
@@ -27,7 +28,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     bool isFilled2 = controller2.text.isNotEmpty;
     // Color buttonColor = isFilled1 && isFilled2 ? Colors.green : Colors.white;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: girisEkraniArkaPlanRengi,
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -43,11 +44,11 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     setState(
                       () {
                         butonColor = isFilled1 && isFilled2
-                            ? Colors.green
-                            : Colors.white;
+                            ? yesilButonRengi
+                            : beyazButonRengi;
                         butonYaziRengi = isFilled1 && isFilled2
-                            ? const Color.fromARGB(255, 255, 255, 255)
-                            : const Color.fromARGB(255, 0, 0, 0);
+                            ? beyazYaziRengi
+                            : siyahYaziRengi;
                       },
                     );
                   },
@@ -72,11 +73,11 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     setState(
                       () {
                         butonColor = isFilled1 && isFilled2
-                            ? Colors.green
-                            : Colors.white;
+                            ? yesilButonRengi
+                            : beyazButonRengi;
                         butonYaziRengi = isFilled1 && isFilled2
-                            ? const Color.fromARGB(255, 255, 255, 255)
-                            : const Color.fromARGB(255, 0, 0, 0);
+                            ? beyazYaziRengi
+                            : siyahYaziRengi;
                       },
                     );
                   },
@@ -95,7 +96,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
               SizedBox(
                 width: 200,
                 child: ElevatedButton(
-                  onPressed: butonColor == Colors.green
+                  onPressed: butonColor == yesilButonRengi
                       ? () {
                           setState(() {
                             yazi = controller.text;
@@ -130,7 +131,10 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                   ),
                   child: Text(
                     "Giriş Yap",
-                    style: TextStyle(color: butonYaziRengi),
+                    style: TextStyle(
+                      color: butonYaziRengi,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
