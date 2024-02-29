@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
+import 'package:garsonapp/sabitler/divider.dart';
 import 'dart:async';
 
 import 'package:garsonapp/sabitler/renkler.dart';
@@ -194,14 +195,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 },
               ),
             ),
-            Divider(
-              // Düz yatay çizgi
-              color: dividerRengi, // Çizgi rengi
-              thickness: 2, // Çizgi kalınlığı
-              height: 20, // Çizgi yüksekliği
-              indent: 20, // Çizginin başlangıç boşluğu
-              endIndent: 20, // Çizginin bitiş boşluğu
-            ),
+            CustomDivider(),
             Container(
               decoration: boxDecoreation,
               height: 40,
