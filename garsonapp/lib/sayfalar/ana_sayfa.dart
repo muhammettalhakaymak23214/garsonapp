@@ -218,7 +218,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                     alignment: Alignment.center,
                     width: 300,
                     height: 50,
-                    margin: EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: statusColors[my2Map.values.elementAt(index)] ??
                           Colors.transparent,
@@ -238,7 +238,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                             style: containerTextStyle,
                           ),
                         ),
-                        const SizedBox(width: 5), //85
+                        const SizedBox(width: 5),
                         Container(
                           decoration: boxDecoreation,
                           margin: const EdgeInsets.all(5),
@@ -246,7 +246,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           width: 150,
                           height: 30,
                           child: Text(
-                            '$value',
+                            value,
                             style: containerTextStyle,
                           ),
                         ),

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:garsonapp/sabitler/boxDecoreation.dart';
+import 'package:garsonapp/sabitler/renkler.dart';
+import 'package:garsonapp/sabitler/text_style.dart';
 
 class SiparisSayfasi extends StatefulWidget {
   const SiparisSayfasi({super.key});
@@ -11,7 +14,7 @@ class _SiparisSayfasiState extends State<SiparisSayfasi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(51, 51, 51, 100),
+      backgroundColor: arkaPlanRengi,
       body: Center(
         child: Column(
           children: [
@@ -19,15 +22,13 @@ class _SiparisSayfasiState extends State<SiparisSayfasi> {
               height: 50,
             ),
             Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: Colors.white),
+              decoration: boxDecoreation,
               height: 40,
               width: 350,
               alignment: Alignment.center,
-              child: const Text(
+              child: Text(
                 "MASA: 10",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: baslikTextStyle,
               ),
             ),
           ],

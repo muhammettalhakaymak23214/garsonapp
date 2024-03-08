@@ -1,32 +1,38 @@
-//import 'dart:ui';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:garsonapp/sabitler/renkler.dart';
+import 'package:garsonapp/apiler/giris_yap.dart';
+import 'package:garsonapp/models/snack_bar.dart';
+import 'package:garsonapp/sabitler/api_url.dart';
+import 'package:http/http.dart' as http;
 import 'package:garsonapp/sayfalar/ana_sayfa.dart';
+import 'package:garsonapp/sabitler/renkler.dart';
 
 class GirisSayfasi extends StatefulWidget {
-  const GirisSayfasi({super.key});
+  const GirisSayfasi({Key? key}) : super(key: key);
 
   @override
-  State<GirisSayfasi> createState() => _GirisSayfasiState();
+  _GirisSayfasiState createState() => _GirisSayfasiState();
 }
 
 class _GirisSayfasiState extends State<GirisSayfasi> {
-  //
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-  String yazi = '';
-  String yazi2 = '';
 
-  //
-  Color butonColor = const Color.fromARGB(255, 255, 255, 255);
-  Color butonYaziRengi = siyahYaziRengi;
-  //
+  String? yazi;
+  String? yazi2;
+
+  Color butonColor = Colors.white;
+  Color butonYaziRengi = Colors.black;
+
+  Future<void> _login() async {
+    await GirisYap.login(context, controller, controller2);
+  }
 
   @override
   Widget build(BuildContext context) {
     bool isFilled1 = controller.text.isNotEmpty;
     bool isFilled2 = controller2.text.isNotEmpty;
-    // Color buttonColor = isFilled1 && isFilled2 ? Colors.green : Colors.white;
+
     return Scaffold(
       backgroundColor: girisEkraniArkaPlanRengi,
       body: SingleChildScrollView(
@@ -57,7 +63,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     hintText: "Kullanıcı Adı",
                     filled: true,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
                 ),
@@ -85,7 +91,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     hintText: "Parola",
                     filled: true,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
                 ),
@@ -93,68 +99,42 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
               const SizedBox(
                 height: 50,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 200,
-                child: ElevatedButton(
-                  onPressed: butonColor == yesilButonRengi
-                      ? () {
-                          setState(() {
-                            yazi = controller.text;
-                            yazi2 = controller2.text;
+              ),
+              ElevatedButton(
+                onPressed: _login,
 
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) =>
-                                        const AnaSayfa(),
-                                transitionsBuilder: (context, animation,
-                                    secondaryAnimation, child) {
-                                  var begin = const Offset(0.0, 1.0);
-                                  var end = Offset.zero;
-                                  var curve = Curves.ease;
-
-                                  var tween = Tween(begin: begin, end: end)
-                                      .chain(CurveTween(curve: curve));
-
-                                  return SlideTransition(
-                                    position: animation.drive(tween),
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );
-                          });
-                        }
-                      : () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: butonColor,
+                ///butonColor == yesilButonRengi ? _login : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: butonColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        10), // İstediğiniz border radius değerini buraya yazabilirsiniz
                   ),
-                  child: Text(
-                    "Giriş Yap",
-                    style: TextStyle(
-                      color: butonYaziRengi,
-                      fontWeight: FontWeight.bold,
+                ),
+                child: Container(
+                  width: 150, // Genişlik değeri
+                  height: 50, // Yükseklik değeri
+                  child: Center(
+                    child: Text(
+                      "Giriş Yap",
+                      style: TextStyle(
+                          color: butonYaziRengi,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
                     ),
                   ),
                 ),
               ),
-
-              //
-              //
-              //
-              //-----------silinecek----------------------
               Text(
-                yazi,
+                yazi ?? '',
                 style: const TextStyle(color: Colors.white),
               ),
               Text(
-                yazi2,
+                yazi2 ?? '',
                 style: const TextStyle(color: Colors.white),
               ),
-              //------------------------------------------------
-              //
-              //
-              //
             ],
           ),
         ),
