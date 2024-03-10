@@ -20,6 +20,6 @@ var girisEkraniArkaPlanRengi = Colors.black;
 var status401 = Color.fromARGB(255, 255, 17, 0);
 var statusTimeOut = const Color.fromARGB(255, 255, 191, 0);
 var statusUnknownError = Color.fromARGB(255, 255, 140, 0);
-//Sipariş Ekranı Renkleri :
+//Bekleme Göstergesi Renkleri :
 var circularProgressIndicatorRengi = const Color.fromARGB(255, 0, 255, 4);
 //Sepet Ekranı Renkleri :

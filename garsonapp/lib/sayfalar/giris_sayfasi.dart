@@ -18,9 +18,6 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
 
-  String? yazi;
-  String? yazi2;
-
   Color butonColor = Colors.white;
   Color butonYaziRengi = Colors.black;
 
@@ -126,14 +123,6 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     ),
                   ),
                 ),
-              ),
-              Text(
-                yazi ?? '',
-                style: const TextStyle(color: Colors.white),
-              ),
-              Text(
-                yazi2 ?? '',
-                style: const TextStyle(color: Colors.white),
               ),
             ],
           ),

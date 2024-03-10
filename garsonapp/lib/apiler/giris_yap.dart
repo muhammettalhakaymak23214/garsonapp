@@ -9,12 +9,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class GirisYap {
   static Future<void> login(
     BuildContext context,
     TextEditingController controller,
     TextEditingController controller2,
   ) async {
+    /*
+    if(){
+
+    }
+    else{
+
+    }
+    */
     final String userId = controller.text;
     final String password = controller2.text;
     try {
@@ -27,7 +37,7 @@ class GirisYap {
               child: MyCircularProgressContainer(
             size: 150, // Genişlik ve yükseklik
             color: circularProgressIndicatorRengi, // Renk
-            strokeWidth: 8, // Çizgi kalınlığı
+            strokeWidth: 15, // Çizgi kalınlığı
           ) // Dairesel ilerleme göstergesi
               );
         },
@@ -62,4 +72,10 @@ class GirisYap {
           context, "Zaman aşımı: Sunucuya bağlanılamadı !", statusTimeOut);
     }
   }
+/*
+  void saveData(String key, String value) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setString(key, value);
+}
+*/
 }

@@ -1,10 +1,12 @@
-import 'dart:math';
-
+import 'dart:convert';
+import 'package:garsonapp/sabitler/api_url.dart';
+import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:garsonapp/apiler/masa_getir.dart';
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
 import 'package:garsonapp/sabitler/divider.dart';
 import 'dart:async';
-
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
 
@@ -19,6 +21,8 @@ class AnaSayfa extends StatefulWidget {
 }
 
 class _AnaSayfaState extends State<AnaSayfa> {
+  Map<int, bool> tableStatusMapEski = {};
+
   final List<String> myList = [
     "1",
     "2",
@@ -65,16 +69,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
   Map<int, bool> myMap = {};
 
-  // Veri havuzundan myMap'i dolduran bir fonksiyon
-  void fillMyMapFromDataSource() {
-    // Burada, gerçek veri kaynağından verileri alarak myMap'i doldurmalısınız
-    // Örnek olarak rastgele değerler ekleyelim
-    final random = Random();
-    for (int i = 0; i < myList.length; i++) {
-      myMap[i] =
-          random.nextBool(); // Rastgele true veya false değerler ekleniyor
-    }
-  }
+  Map<int, bool> tableStatusMap = {};
 
   Map<int, String> my2Map = {
     0: "Sipariş Hazır",
@@ -97,12 +92,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
     "Sipariş Beklemede": siparisBeklemede,
   };
 
-  int startIndex = 0;
-
   @override
   void initState() {
     super.initState();
-    // Timer'ı başlat
     _startTimer();
   }
 
@@ -114,13 +106,58 @@ class _AnaSayfaState extends State<AnaSayfa> {
   }
 
   void _startTimer() {
-    const Duration refreshDuration = Duration(seconds: 5);
+    const Duration refreshDuration = Duration(seconds: 3);
     _timer = Timer.periodic(refreshDuration, (timer) {
-      // setState çağrarak sayfayı güncelle
-      setState(() {
-        fillMyMapFromDataSource();
-      });
+      //Apiler
+      fetchTableData(); // Ekrana bilgileri basan api
+      fetchTableDataSetStateKontrol(); // Değişiklik tespit etmek için kullanılan api
     });
+  }
+
+  Future<List<TableData>> fetchTableData() async {
+    final response = await http.get(Uri.parse(apiUrlMasaGetir));
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<TableData> tableDataList =
+          data.map((item) => TableData.fromJson(item)).toList();
+      return tableDataList;
+    } else {
+      throw Exception(' Hata => Fonksiyon : fetchTableData');
+    }
+  }
+
+  Future<void> fetchTableDataSetStateKontrol() async {
+    final response = await http.get(Uri.parse(apiUrlMasaGetir));
+    if (response.statusCode == 200) {
+      List<dynamic> responseData = jsonDecode(response.body);
+      Map<int, bool> tempMap = {};
+      for (var data in responseData) {
+        tempMap[data['tableNumber']] = data['status'];
+      }
+      if (!mapsEqual(tableStatusMapEski, tempMap)) {
+        debugPrint(
+            "eski : $tableStatusMapEski"); //Hata kontrolü için konsola basma işlemi
+        debugPrint("yeni : $tempMap"); //Hata kontrolü için konsola basma işlemi
+
+        tableStatusMapEski = tempMap;
+        setState(() {});
+      }
+    } else {
+      throw Exception(' Hata => Fonksiyon : fetchTableDataSetStateKontrol');
+    }
+  }
+
+  // Eski veri ile yeni veriyi karşılaştırma işlemini yapan fonskiyon
+  bool mapsEqual(Map<int, bool> map1, Map<int, bool> map2) {
+    if (map1.length != map2.length) {
+      return false;
+    }
+    for (var key in map1.keys) {
+      if (!map2.containsKey(key) || map1[key] != map2[key]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @override
@@ -143,58 +180,66 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 style: baslikTextStyle,
               ),
             ),
+            //------------------------------------------------------------------------------------
             Container(
               width: 350,
               height: 280,
-              child: ListView.builder(
-                itemCount: (myMap.length / 5).ceil(), // Satır sayısı
-                itemBuilder: (BuildContext context, int rowIndex) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      5,
-                      (int columnIndex) {
-                        final index = rowIndex * 5 + columnIndex;
-                        final mapValue = myMap[index];
-                        if (index < myMap.length) {
-                          return GestureDetector(
-                            onTap: () {
-                              // Container tıklandığında yapılacak işlemler
-                              // print(index + 1 + );
-                              print(
-                                  'Key: ${myMap.keys.elementAt(index)}, Value: ${mapValue != null ? (mapValue ? 'true' : 'false') : 'null'}');
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: mapValue != null && mapValue
-                                    ? doluMasaRengi
-                                    : bosMasaRengi,
+              child: FutureBuilder<List<TableData>>(
+                future: fetchTableData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    List<TableData>? tableData = snapshot.data;
+                    return GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5, // 5 öğe yatayda sıralanacak
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 8.0,
+                      ),
+                      itemCount: tableData!.length,
+                      itemBuilder: (context, index) {
+                        Color containerColor = tableData[index].status
+                            ? doluMasaRengi
+                            : bosMasaRengi;
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MenuPage(
+                                    masaNumber: tableData[index].tableNumber),
                               ),
-                              height: 50,
-                              width: 50,
-                              margin: const EdgeInsets.all(10.0),
-                              alignment: Alignment.center,
-                              child: Text(
-                                (myMap.keys.elementAt(index))
-                                    .toString(), // Sayıları ekrana yazdırıyoruz
-                                style: baslikTextStyle,
-                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: containerColor,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5.0),
                             ),
-                          );
-                        } else {
-                          return Container(
-                            height: 60,
-                            width: 60,
-                            margin: const EdgeInsets.all(5.0),
-                          ); // Eksik elemanlar için boş Container
-                        }
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${tableData[index].tableNumber}',
+                              style: TextStyle(
+                                  color: siyahYaziRengi,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
                       },
-                    ),
-                  );
+                    );
+                  }
                 },
               ),
             ),
+
+            //------------------------------------------------------------------------------------
             CustomDivider(),
             Container(
               decoration: boxDecoreation,
@@ -206,6 +251,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 style: baslikTextStyle,
               ),
             ),
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Container(
               width: 350,
               height: 400,
@@ -272,6 +318,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 },
               ),
             ),
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           ],
         ),
       ),
