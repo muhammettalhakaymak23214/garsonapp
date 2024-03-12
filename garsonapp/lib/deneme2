@@ -705,3 +705,15 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
 
 */
+
+/*
+  "yemekAdi": [150, 2],
+    "yemekAdi2": [151, 2],
+    "yemekAd3": [159, 1],
+    "yemekAd4": [120, 4],
+    "yemekAd5": [150, 2],
+    "yemekAdi25": [151, 2],
+    "yemekAd35": [159, 1],
+    "yemekAd45": [120, 4],
+    "yemekAd55": [150, 2],
+*/

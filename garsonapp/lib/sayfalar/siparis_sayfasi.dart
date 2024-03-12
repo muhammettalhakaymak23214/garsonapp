@@ -23,17 +23,9 @@ class _MenuPageState extends State<MenuPage> {
   List<String> bosStringListesi = [];
 
 //sepet sayfasına gidecek örnek veri
-  Map<String, List<int>> yemekMap = {
-    "yemekAdi": [150, 2],
-    "yemekAdi2": [151, 2],
-    "yemekAd3": [159, 1],
-    "yemekAd4": [120, 4],
-    "yemekAd5": [150, 2],
-    "yemekAdi25": [151, 2],
-    "yemekAd35": [159, 1],
-    "yemekAd45": [120, 4],
-    "yemekAd55": [150, 2],
-  };
+  Map<String, List<double>> yemekMap = {};
+
+  // double adet = 0;
 //-------------------------
 
   @override
@@ -48,6 +40,12 @@ class _MenuPageState extends State<MenuPage> {
       List<dynamic> jsonData = json.decode(response.body);
       List<Map<String, dynamic>> menuData = [];
       for (var category in jsonData) {
+        List<dynamic> menus = category['menus'];
+        for (var menu in menus) {
+          String name = utf8.decode(menu['name'].runes.toList());
+          double price = menu['price'];
+          yemekMap[name] = [price, 0]; // Adet başlangıçta 0 olarak ekleniyor.
+        }
         menuData.add({
           'name': utf8.decode(category['name'].runes.toList()),
           'isCategory': true,
@@ -145,6 +143,14 @@ class _MenuPageState extends State<MenuPage> {
                                       category['menus'].length,
                                       (menuIndex) {
                                         var menu = category['menus'][menuIndex];
+                                        double adet = yemekMap.containsKey(
+                                                utf8.decode(menu['name']
+                                                    .runes
+                                                    .toList()))
+                                            ? yemekMap[utf8.decode(menu['name']
+                                                .runes
+                                                .toList())]![1]
+                                            : 0;
                                         return Container(
                                             height: 100,
                                             width: 350,
@@ -152,8 +158,11 @@ class _MenuPageState extends State<MenuPage> {
                                             margin: const EdgeInsets.only(
                                                 bottom: 10),
                                             decoration: BoxDecoration(
-                                              color: Colors
-                                                  .grey, // Yemek container rengi
+                                              color: const Color.fromARGB(
+                                                  255,
+                                                  255,
+                                                  17,
+                                                  0), // Yemek container rengi
                                               borderRadius:
                                                   BorderRadius.circular(5),
                                             ),
@@ -271,6 +280,7 @@ class _MenuPageState extends State<MenuPage> {
                                                                       .center,
                                                               onPressed: () {
                                                                 // İkon butona tıklandığında yapılacak işlemler
+                                                                /*
                                                                 bosStringListesi.add(
                                                                     utf8.decode(menu[
                                                                             'name']
@@ -279,6 +289,23 @@ class _MenuPageState extends State<MenuPage> {
                                                                 debugPrint(
                                                                     bosStringListesi
                                                                         .toString());
+*/
+                                                                adet++;
+                                                                //adet--;
+                                                                yemekMap
+                                                                    .addAll({
+                                                                  utf8.decode(menu[
+                                                                          'name']
+                                                                      .runes
+                                                                      .toList()): [
+                                                                    menu[
+                                                                        'price'],
+                                                                    adet
+                                                                  ]
+                                                                });
+                                                                setState(() {});
+                                                                debugPrint(yemekMap
+                                                                    .toString());
                                                               },
 
                                                               icon: const Icon(
@@ -309,8 +336,8 @@ class _MenuPageState extends State<MenuPage> {
                                                                       .center,
                                                               height: 30,
                                                               width: 70,
-                                                              child: const Text(
-                                                                  "Adet: 5")),
+                                                              child: Text(adet
+                                                                  .toString())),
                                                           const SizedBox(
                                                             width: 10,
                                                           ),
@@ -330,6 +357,24 @@ class _MenuPageState extends State<MenuPage> {
                                                                       .center,
                                                               onPressed: () {
                                                                 // İkon butona tıklandığında yapılacak işlemler
+
+                                                                adet = adet - 1;
+                                                                yemekMap
+                                                                    .addAll({
+                                                                  utf8.decode(menu[
+                                                                          'name']
+                                                                      .runes
+                                                                      .toList()): [
+                                                                    menu[
+                                                                        'price'],
+                                                                    adet
+                                                                  ]
+                                                                });
+                                                                debugPrint(adet
+                                                                    .toString());
+                                                                setState(() {});
+                                                                debugPrint(yemekMap
+                                                                    .toString());
                                                               },
                                                               icon: const Icon(
                                                                   Icons.delete,
