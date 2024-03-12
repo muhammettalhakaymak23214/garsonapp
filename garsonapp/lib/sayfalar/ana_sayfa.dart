@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:garsonapp/sabitler/api_url.dart';
+import 'package:garsonapp/sayfalar/giris_sayfasi.dart';
 import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -162,164 +163,177 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: arkaPlanRengi,
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 50,
-            ),
-            Container(
-              decoration: boxDecoreation,
-              height: 40,
-              width: 350,
-              alignment: Alignment.center,
-              child: Text(
-                "MASALAR",
-                style: baslikTextStyle,
+    return WillPopScope(
+      onWillPop: () async {
+        // Geri tuşuna basıldığında giriş sayfasına yönlendir
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GirisSayfasi(), // Giriş sayfası widget'ı
+          ),
+        );
+        // Geri tuşunun işlenmesini durdur
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: arkaPlanRengi,
+        body: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 50,
               ),
-            ),
-            //------------------------------------------------------------------------------------
-            Container(
-              width: 350,
-              height: 280,
-              child: FutureBuilder<List<TableData>>(
-                future: fetchTableData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    List<TableData>? tableData = snapshot.data;
-                    return GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5, // 5 öğe yatayda sıralanacak
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                      ),
-                      itemCount: tableData!.length,
-                      itemBuilder: (context, index) {
-                        Color containerColor = tableData[index].status
-                            ? doluMasaRengi
-                            : bosMasaRengi;
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MenuPage(
-                                    masaNumber: tableData[index].tableNumber),
+              Container(
+                decoration: boxDecoreation,
+                height: 40,
+                width: 350,
+                alignment: Alignment.center,
+                child: Text(
+                  "MASALAR",
+                  style: baslikTextStyle,
+                ),
+              ),
+              //------------------------------------------------------------------------------------
+              Container(
+                width: 350,
+                height: 280,
+                child: FutureBuilder<List<TableData>>(
+                  future: fetchTableData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else {
+                      List<TableData>? tableData = snapshot.data;
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5, // 5 öğe yatayda sıralanacak
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
+                        ),
+                        itemCount: tableData!.length,
+                        itemBuilder: (context, index) {
+                          Color containerColor = tableData[index].status
+                              ? doluMasaRengi
+                              : bosMasaRengi;
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MenuPage(
+                                      masaNumber: tableData[index].tableNumber),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: containerColor,
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(5.0),
                               ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: containerColor,
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(5.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${tableData[index].tableNumber}',
+                                style: TextStyle(
+                                    color: siyahYaziRengi,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              '${tableData[index].tableNumber}',
-                              style: TextStyle(
-                                  color: siyahYaziRengi,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
 
-            //------------------------------------------------------------------------------------
-            CustomDivider(),
-            Container(
-              decoration: boxDecoreation,
-              height: 40,
-              width: 350,
-              alignment: Alignment.center,
-              child: Text(
-                "SİPARİŞLER",
-                style: baslikTextStyle,
+              //------------------------------------------------------------------------------------
+              CustomDivider(),
+              Container(
+                decoration: boxDecoreation,
+                height: 40,
+                width: 350,
+                alignment: Alignment.center,
+                child: Text(
+                  "SİPARİŞLER",
+                  style: baslikTextStyle,
+                ),
               ),
-            ),
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            Container(
-              width: 350,
-              height: 400,
-              child: ListView.builder(
-                itemCount: my2Map.length,
-                itemBuilder: (BuildContext context, int index) {
-                  int key = my2Map.keys.elementAt(index);
-                  String value = my2Map.values.elementAt(index);
-                  return Container(
-                    alignment: Alignment.center,
-                    width: 300,
-                    height: 50,
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: statusColors[my2Map.values.elementAt(index)] ??
-                          Colors.transparent,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          decoration: boxDecoreation,
-                          margin: const EdgeInsets.all(5),
-                          alignment: Alignment.center,
-                          width: 80,
-                          height: 30,
-                          child: Text(
-                            'Masa: $key',
-                            style: containerTextStyle,
+              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              Container(
+                width: 350,
+                height: 400,
+                child: ListView.builder(
+                  itemCount: my2Map.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    int key = my2Map.keys.elementAt(index);
+                    String value = my2Map.values.elementAt(index);
+                    return Container(
+                      alignment: Alignment.center,
+                      width: 300,
+                      height: 50,
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: statusColors[my2Map.values.elementAt(index)] ??
+                            Colors.transparent,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: boxDecoreation,
+                            margin: const EdgeInsets.all(5),
+                            alignment: Alignment.center,
+                            width: 80,
+                            height: 30,
+                            child: Text(
+                              'Masa: $key',
+                              style: containerTextStyle,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 5),
-                        Container(
-                          decoration: boxDecoreation,
-                          margin: const EdgeInsets.all(5),
-                          alignment: Alignment.center,
-                          width: 150,
-                          height: 30,
-                          child: Text(
-                            value,
-                            style: containerTextStyle,
+                          const SizedBox(width: 5),
+                          Container(
+                            decoration: boxDecoreation,
+                            margin: const EdgeInsets.all(5),
+                            alignment: Alignment.center,
+                            width: 150,
+                            height: 30,
+                            child: Text(
+                              value,
+                              style: containerTextStyle,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 35),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          child: IconButton(
-                              onPressed: () {
-                                // Butona basıldığında yapılacak işlemler buraya yazılır
-                                setState(() {
-                                  my2Map.remove(key);
-                                });
-                              },
-                              icon: const Icon(Icons.clear), // Çarpı ikonu
-                              iconSize: 30, // İkon boyutu
-                              color: ikonRengi // İkon rengi
-                              ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                          const SizedBox(width: 35),
+                          Container(
+                            height: 50,
+                            width: 50,
+                            child: IconButton(
+                                onPressed: () {
+                                  // Butona basıldığında yapılacak işlemler buraya yazılır
+                                  setState(() {
+                                    my2Map.remove(key);
+                                  });
+                                },
+                                icon: const Icon(Icons.clear), // Çarpı ikonu
+                                iconSize: 30, // İkon boyutu
+                                color: ikonRengi // İkon rengi
+                                ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-          ],
+              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ],
+          ),
         ),
       ),
     );
