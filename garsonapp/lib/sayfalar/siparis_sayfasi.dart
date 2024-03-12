@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
+import 'package:garsonapp/sayfalar/sepet_sayfasi.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:garsonapp/sabitler/api_url.dart';
@@ -20,6 +21,20 @@ class _MenuPageState extends State<MenuPage> {
   late Future<List<Map<String, dynamic>>> _menuData;
 
   List<String> bosStringListesi = [];
+
+//sepet sayfasına gidecek örnek veri
+  Map<String, List<int>> yemekMap = {
+    "yemekAdi": [150, 2],
+    "yemekAdi2": [151, 2],
+    "yemekAd3": [159, 1],
+    "yemekAd4": [120, 4],
+    "yemekAd5": [150, 2],
+    "yemekAdi25": [151, 2],
+    "yemekAd35": [159, 1],
+    "yemekAd45": [120, 4],
+    "yemekAd55": [150, 2],
+  };
+//-------------------------
 
   @override
   void initState() {
@@ -49,7 +64,15 @@ class _MenuPageState extends State<MenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SepetSayfasi(
+                  masaNumber: widget.masaNumber, gelenMap: yemekMap),
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
       backgroundColor: arkaPlanRengi,
@@ -94,11 +117,11 @@ class _MenuPageState extends State<MenuPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: menuData.map<Widget>((category) {
-                          Color categoryColor =
+                          const Color categoryColor =
                               Color.fromARGB(255, 120, 0, 240);
                           return Container(
-                            margin: EdgeInsets.only(bottom: 20),
-                            padding: EdgeInsets.all(10),
+                            margin: const EdgeInsets.only(bottom: 20),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               // color: categoryColor,
                               color: const Color.fromARGB(255, 255, 255, 255),
@@ -125,14 +148,12 @@ class _MenuPageState extends State<MenuPage> {
                                         return Container(
                                             height: 100,
                                             width: 350,
-                                            padding: EdgeInsets.all(10),
-                                            margin: EdgeInsets.only(bottom: 10),
+                                            padding: const EdgeInsets.all(10),
+                                            margin: const EdgeInsets.only(
+                                                bottom: 10),
                                             decoration: BoxDecoration(
-                                              color: const Color.fromARGB(
-                                                  255,
-                                                  0,
-                                                  0,
-                                                  0), // Yemek container rengi
+                                              color: Colors
+                                                  .grey, // Yemek container rengi
                                               borderRadius:
                                                   BorderRadius.circular(5),
                                             ),
@@ -158,7 +179,8 @@ class _MenuPageState extends State<MenuPage> {
                                                           height: 30,
                                                           width: 80,
                                                           margin:
-                                                              EdgeInsets.all(5),
+                                                              const EdgeInsets
+                                                                  .all(5),
                                                           child: Text(
                                                             utf8.decode(
                                                                 menu['name']
@@ -180,7 +202,8 @@ class _MenuPageState extends State<MenuPage> {
                                                           height: 30,
                                                           width: 80,
                                                           margin:
-                                                              EdgeInsets.all(5),
+                                                              const EdgeInsets
+                                                                  .all(5),
                                                           child: Text(
                                                               menu['price']
                                                                   .toString())),
@@ -206,8 +229,8 @@ class _MenuPageState extends State<MenuPage> {
                                                         children: [
                                                           Container(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    0),
+                                                                const EdgeInsets
+                                                                    .all(0),
                                                             //color: Colors.white,
                                                             alignment: Alignment
                                                                 .center,
@@ -222,20 +245,20 @@ class _MenuPageState extends State<MenuPage> {
                                                                 // İkon butona tıklandığında yapılacak işlemler
                                                               },
 
-                                                              icon: Icon(
+                                                              icon: const Icon(
                                                                   Icons
                                                                       .note_add_rounded,
                                                                   color: Colors
                                                                       .white), // Kullanılacak ikon
                                                             ),
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: 40,
                                                           ),
                                                           Container(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    0),
+                                                                const EdgeInsets
+                                                                    .all(0),
                                                             //color: Colors.white,
                                                             alignment: Alignment
                                                                 .center,
@@ -258,7 +281,7 @@ class _MenuPageState extends State<MenuPage> {
                                                                         .toString());
                                                               },
 
-                                                              icon: Icon(
+                                                              icon: const Icon(
                                                                   Icons.add,
                                                                   color: Colors
                                                                       .white), // Kullanılacak ikon
@@ -279,22 +302,22 @@ class _MenuPageState extends State<MenuPage> {
                                                                       BorderRadius.circular(
                                                                           10)),
                                                               padding:
-                                                                  EdgeInsets
+                                                                  const EdgeInsets
                                                                       .all(0),
                                                               alignment:
                                                                   Alignment
                                                                       .center,
                                                               height: 30,
                                                               width: 70,
-                                                              child: Text(
+                                                              child: const Text(
                                                                   "Adet: 5")),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: 10,
                                                           ),
                                                           Container(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    0),
+                                                                const EdgeInsets
+                                                                    .all(0),
                                                             //color: Colors.white,
                                                             alignment: Alignment
                                                                 .center,
@@ -308,7 +331,7 @@ class _MenuPageState extends State<MenuPage> {
                                                               onPressed: () {
                                                                 // İkon butona tıklandığında yapılacak işlemler
                                                               },
-                                                              icon: Icon(
+                                                              icon: const Icon(
                                                                   Icons.delete,
                                                                   color: Colors
                                                                       .white),
@@ -339,7 +362,7 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                   );
                 } else {
-                  return Center(child: Text('No data available'));
+                  return const Center(child: Text('No data available'));
                 }
               },
             ),
