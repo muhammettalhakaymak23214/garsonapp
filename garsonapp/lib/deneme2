@@ -717,3 +717,18 @@ class _AnaSayfaState extends State<AnaSayfa> {
     "yemekAd45": [120, 4],
     "yemekAd55": [150, 2],
 */
+
+/*
+floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SepetSayfasi(
+                  masaNumber: widget.masaNumber, gelenMap: yemekMap),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+*/

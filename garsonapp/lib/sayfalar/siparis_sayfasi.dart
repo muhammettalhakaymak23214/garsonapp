@@ -63,13 +63,39 @@ class _MenuPageState extends State<MenuPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SepetSayfasi(
-                  masaNumber: widget.masaNumber, gelenMap: yemekMap),
-            ),
-          );
+          bool anyNonZeroQuantity =
+              yemekMap.values.any((value) => value[1] > 0);
+          if (anyNonZeroQuantity) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SepetSayfasi(
+                  masaNumber: widget.masaNumber,
+                  gelenMap: yemekMap,
+                ),
+              ),
+            );
+          } else {
+            // Hiçbir üründen seçim yapılmamış, uyarı gösterilebilir veya başka bir işlem yapılabilir.
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Uyarı"),
+                  content:
+                      Text("Sepete eklemek için en az bir ürün seçmelisiniz."),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Tamam"),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
         },
         child: const Icon(Icons.add),
       ),
