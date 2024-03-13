@@ -358,7 +358,11 @@ class _MenuPageState extends State<MenuPage> {
                                                               onPressed: () {
                                                                 // İkon butona tıklandığında yapılacak işlemler
 
-                                                                adet = adet - 1;
+                                                                if (adet > 0) {
+                                                                  adet =
+                                                                      adet - 1;
+                                                                }
+
                                                                 yemekMap
                                                                     .addAll({
                                                                   utf8.decode(menu[
