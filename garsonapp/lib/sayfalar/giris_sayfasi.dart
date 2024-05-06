@@ -1,11 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:garsonapp/apiler/giris_yap.dart';
-import 'package:garsonapp/models/snack_bar.dart';
-import 'package:garsonapp/sabitler/api_url.dart';
-import 'package:http/http.dart' as http;
-import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -119,8 +114,8 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Divider(color: Colors.white),
-                SizedBox(height: 20),
+                const Divider(color: Colors.white),
+                const SizedBox(height: 20),
                 TextField(
                   onChanged: (value) {
                     setState(
@@ -132,26 +127,23 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     hintText: "Ip adresinin son 3 basamağı",
                     filled: true,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     final String seciliIpAdresi = controllerIp.text;
                     _kaydetSecilenIp(seciliIpAdresi);
-                    //StringBirlestirici.birlestir();
+
                     _getirSecilenIp();
                     Navigator.pop(context);
                   },
-
-                  ///butonColor == yesilButonRengi ? _login : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: butonColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          10), // İstediğiniz border radius değerini buraya yazabilirsiniz
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   child: Container(
@@ -179,11 +171,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
   @override
   void initState() {
     _getirSecilenIp();
-
     // TODO: implement initState
-    //_kaydetSecilenIp(secilenIp);
-    // _getirSecilenIp();
-    //  _getirSecilenOturum();
     super.initState();
   }
 
@@ -207,7 +195,9 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
             _ipGirisEkrani(context);
           }, // Butona basıldığında sayaçı artır
           tooltip: 'Artır',
-          child: Icon(Icons.add),
+          child: Icon(Icons.network_wifi_2_bar_sharp),
+          backgroundColor: Colors.white,
+          mini: true,
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -237,7 +227,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                       hintText: "Kullanıcı Adı",
                       filled: true,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
                     ),
                   ),
@@ -265,7 +255,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                       hintText: "Parola",
                       filled: true,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
                     ),
                   ),
@@ -277,7 +267,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Oturumu Açık Tut",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
@@ -311,13 +301,13 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: butonColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          10), // İstediğiniz border radius değerini buraya yazabilirsiniz
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   child: Container(
                     width: 150, // Genişlik değeri
                     height: 50, // Yükseklik değeri
+
                     child: Center(
                       child: Text(
                         "Giriş Yap",
