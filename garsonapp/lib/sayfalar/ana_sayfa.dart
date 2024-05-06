@@ -10,6 +10,7 @@ import 'package:garsonapp/sabitler/divider.dart';
 import 'dart:async';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Timer'ı sınıfın dışında tanımlayın ki dispose işlevi içinde kullanabilelim
 late Timer _timer;
@@ -22,57 +23,23 @@ class AnaSayfa extends StatefulWidget {
 }
 
 class _AnaSayfaState extends State<AnaSayfa> {
-  Map<int, bool> tableStatusMapEski = {};
+  Map<int, String> tableStatusMapEski = {};
 
-  final List<String> myList = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-    "25",
-    "26",
-    "27",
-    "28",
-    "29",
-    "30",
-    "31",
-    "32",
-    "33",
-    "34",
-    "35",
-    "36",
-    "37",
-    "38",
-    "39",
-    "40",
-  ];
-  // Rastgele eleman sayısı belirleme
+  String secilenIp = "";
+  String apiUrl = "";
+  String apiUrlMasaGetir = "";
+  String apiUrlMenuGetir = "";
+  String apiUrlSiparisGetir = "";
+  String apiUrlSiparisSil = "";
 
-  Map<int, bool> myMap = {};
+  List<Map<String, dynamic>> orders = [];
 
-  Map<int, bool> tableStatusMap = {};
+  Map<int, String> myMap = {};
 
-  Map<int, String> my2Map = {
+  Map<int, String> tableStatusMap = {};
+
+  Map<int, List<String>> my2Map = {
+    /*
     0: "Sipariş Hazır",
     1: "Sipariş Hazır",
     2: "Sipariş İptal",
@@ -83,6 +50,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
     7: "Sipariş İptal",
     8: "Sipariş Beklemede",
     9: "Sipariş Hazır",
+    */
 
     // Diğer anahtar-değer çiftleri buraya eklenir...
   };
@@ -96,7 +64,26 @@ class _AnaSayfaState extends State<AnaSayfa> {
   @override
   void initState() {
     super.initState();
+    _getirSecilenIp();
+    //fetchOrders(); //sipariş durum apisi
+
     _startTimer();
+  }
+
+  Future<void> _kaydetSecilenIp(String secilenIp) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('secilenIp', secilenIp);
+    secilenIp = prefs.getString('secilenIp') ?? "100";
+  }
+
+  Future<void> _getirSecilenIp() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    secilenIp = prefs.getString('secilenIp') ?? "100";
+    apiUrl = "http://192.168.1.${secilenIp}:8080/login";
+    apiUrlMasaGetir = 'http://192.168.1.${secilenIp}:8080/tables';
+    apiUrlMenuGetir = 'http://192.168.1.${secilenIp}:8080/categories';
+    apiUrlSiparisGetir = 'http://192.168.1.${secilenIp}:8080/getOrdersByStatus';
+    apiUrlSiparisSil = 'http://192.168.1.${secilenIp}:8080/dontShowOrder';
   }
 
   @override
@@ -110,11 +97,88 @@ class _AnaSayfaState extends State<AnaSayfa> {
     const Duration refreshDuration = Duration(seconds: 3);
     _timer = Timer.periodic(refreshDuration, (timer) {
       //Apiler
-      fetchTableData(); // Ekrana bilgileri basan api
-      fetchTableDataSetStateKontrol(); // Değişiklik tespit etmek için kullanılan api
+      //fetchTableData(); // Ekrana bilgileri basan api
+      fetchTableDataSetStateKontrol();
+      //fetchOrders();
+      fetchOrdersDegisiklikTespitApisi(); // Değişiklik tespit etmek için kullanılan api
     });
   }
 
+  Future<void> fetchOrders() async {
+    final response = await http.get(Uri.parse(
+        apiUrlSiparisGetir)); // apiUrl değişkenini kullanarak API'ye istek gönderin
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+
+      // Gelen verileri my2Map içine ekleyin
+      for (var data in responseData) {
+        int tableNumber = data['tableNumber'];
+        int orderId = data['orderId'];
+        String status = data['status'].toString();
+        String tableNumberString = tableNumber.toString();
+
+        my2Map[orderId] = [tableNumberString, status];
+        // my2Map[tableNumber] = status;
+/*
+         my2Map[tableNumber] = {
+        'status': status,
+        'orderId': orderId,
+      };*/
+      }
+      debugPrint("**********************************************************");
+      debugPrint(my2Map.toString());
+      debugPrint("**********************************************************");
+
+      // setState çağırarak arayüzü yenileyin
+      setState(() {});
+    } else {
+      throw Exception('Failed to load orders');
+    }
+  }
+
+  Future<void> fetchOrdersDegisiklikTespitApisi() async {
+    final response = await http.get(Uri.parse(
+        apiUrlSiparisGetir)); // apiUrl değişkenini kullanarak API'ye istek gönderin
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      Map<int, List<String>> my2MapTemp = {};
+      // Gelen verileri my2Map içine ekleyin
+      for (var data in responseData) {
+        int tableNumber = data['tableNumber'];
+        int orderId = data['orderId'];
+        String status = data['status'].toString();
+        String tableNumberString = tableNumber.toString();
+
+        my2MapTemp[orderId] = [tableNumberString, status];
+        // my2Map[tableNumber] = status;
+/*
+         my2Map[tableNumber] = {
+        'status': status,
+        'orderId': orderId,
+      };*/
+      }
+      if (!mapsEqual2(my2Map, my2MapTemp)) {
+        debugPrint("eski : $my2Map");
+        debugPrint("yeni : $my2MapTemp");
+        my2Map = my2MapTemp;
+        debugPrint(
+            "**********************************************************");
+        debugPrint(my2Map.toString());
+        debugPrint(
+            "**********************************************************");
+        setState(() {});
+      }
+
+      // setState çağırarak arayüzü yenileyin
+      //setState(() {});
+    } else {
+      throw Exception('Failed to load orders');
+    }
+  }
+
+  //<--                                                           -->
   Future<List<TableData>> fetchTableData() async {
     final response = await http.get(Uri.parse(apiUrlMasaGetir));
     if (response.statusCode == 200) {
@@ -131,30 +195,78 @@ class _AnaSayfaState extends State<AnaSayfa> {
     final response = await http.get(Uri.parse(apiUrlMasaGetir));
     if (response.statusCode == 200) {
       List<dynamic> responseData = jsonDecode(response.body);
-      Map<int, bool> tempMap = {};
+      Map<int, String> tempMap =
+          {}; // tempMap değişkenini Map<int, String> olarak tanımla
       for (var data in responseData) {
-        tempMap[data['tableNumber']] = data['status'];
+        tempMap[data['tableNumber']] =
+            data['status']; // status alanını String olarak al
       }
       if (!mapsEqual(tableStatusMapEski, tempMap)) {
-        debugPrint(
-            "eski : $tableStatusMapEski"); //Hata kontrolü için konsola basma işlemi
-        debugPrint("yeni : $tempMap"); //Hata kontrolü için konsola basma işlemi
-
+        debugPrint("eski : $tableStatusMapEski");
+        debugPrint("yeni : $tempMap");
         tableStatusMapEski = tempMap;
         setState(() {});
       }
     } else {
-      throw Exception(' Hata => Fonksiyon : fetchTableDataSetStateKontrol');
+      throw Exception('Hata => Fonksiyon : fetchTableDataSetStateKontrol');
+    }
+  }
+
+  Future<void> _postDataSil(String silinecekId) async {
+    final url = Uri.parse(apiUrlSiparisSil);
+    debugPrint("------------565656---------------------------");
+
+    final response = await http.post(
+      url,
+      body: {
+        'orderId': silinecekId,
+      },
+    ).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      // Başarılı bir şekilde gönderildi.
+
+      print('oldu oldu oldu oldu oldu.');
+    } else {
+      // İstekte bir hata oluştu.
+      print('Post isteğinde hata oluştu: ${response.statusCode}');
     }
   }
 
   // Eski veri ile yeni veriyi karşılaştırma işlemini yapan fonskiyon
-  bool mapsEqual(Map<int, bool> map1, Map<int, bool> map2) {
+  bool mapsEqual(Map<int, String> map1, Map<int, String> map2) {
     if (map1.length != map2.length) {
       return false;
     }
     for (var key in map1.keys) {
       if (!map2.containsKey(key) || map1[key] != map2[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool mapsEqual2(Map<int, List<String>?> map1, Map<int, List<String>?> map2) {
+    if (map1.length != map2.length) {
+      return false;
+    }
+    for (var key in map1.keys) {
+      if (!map2.containsKey(key) || !listsEqual(map1[key], map2[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool listsEqual(List<String>? list1, List<String>? list2) {
+    if (list1 == null && list2 == null) {
+      return true;
+    }
+    if (list1 == null || list2 == null || list1.length != list2.length) {
+      return false;
+    }
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i] != list2[i]) {
         return false;
       }
     }
@@ -215,16 +327,18 @@ class _AnaSayfaState extends State<AnaSayfa> {
                         ),
                         itemCount: tableData!.length,
                         itemBuilder: (context, index) {
-                          Color containerColor = tableData[index].status
-                              ? doluMasaRengi
-                              : bosMasaRengi;
+                          Color containerColor =
+                              (tableData[index].status == "DOLU")
+                                  ? doluMasaRengi
+                                  : bosMasaRengi;
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => MenuPage(
-                                      masaNumber: tableData[index].tableNumber),
+                                      masaNumber: tableData[index].tableNumber,
+                                      masaId: tableData[index].id),
                                 ),
                               );
                             },
@@ -264,8 +378,64 @@ class _AnaSayfaState extends State<AnaSayfa> {
                   style: baslikTextStyle,
                 ),
               ),
-              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
               Container(
+                height: 400,
+                //padding: EdgeInsets.all(16.0),
+                child: ListView.builder(
+                  itemCount: my2Map.length,
+                  itemBuilder: (context, index) {
+                    var key = my2Map.keys.elementAt(index);
+                    var value = my2Map[key];
+                    if (value?[1] == "gosterme") {
+                      return SizedBox
+                          .shrink(); // Boş bir widget döndürerek hiçbir şey göstermeyeceğiz
+                    }
+                    return Container(
+                      //  margin: EdgeInsets.symmetric(vertical: 8.0),
+                      //padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Column(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Container $key',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'OrderId: $key',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            'Table Number: ${value?[0]}',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            'Status: ${value?[1]}',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                _postDataSil(key.toString());
+                              },
+                              child: Text(
+                                "Bİr daha gösterme",
+                                style: TextStyle(color: Colors.white),
+                              ))
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              /*
+Container(
                 width: 350,
                 height: 400,
                 child: ListView.builder(
@@ -331,6 +501,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                   },
                 ),
               ),
+              */
               ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ],
           ),

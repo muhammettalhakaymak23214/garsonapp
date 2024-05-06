@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
 import 'package:garsonapp/sabitler/divider.dart';
@@ -7,21 +8,39 @@ import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
 import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SepetSayfasi extends StatefulWidget {
   final int masaNumber;
+  final int masaId;
   final Map<String, dynamic> gelenMap;
+  final String siparisNotu;
 
-  SepetSayfasi({required this.masaNumber, required this.gelenMap});
+  SepetSayfasi(
+      {required this.masaNumber,
+      required this.gelenMap,
+      required this.masaId,
+      required this.siparisNotu});
 
   @override
   State<SepetSayfasi> createState() => _SepetSayfasiState();
 }
 
 class _SepetSayfasiState extends State<SepetSayfasi> {
+  int orderId = 0;
+  int tableId = 0; //-----------------------
+  String secilenIp = "";
+  String apiUrl = "";
+  String apiUrlMasaGetir = "";
+  String apiUrlMenuGetir = "";
+  String apiUrlcreateOrder = "";
+  String apiUrlOrderDetails = "";
   Map<String, List<double>> gercekVerilerMap = {};
   @override
   void initState() {
+    _getirSecilenIp();
+    debugPrint("Gelen Map: ${widget.gelenMap.toString()}");
+    debugPrint("Gelen Sipariş Notu: ${widget.siparisNotu}");
     // TODO: implement initState
     widget.gelenMap.forEach((key, value) {
       // value[1] yani yemek adedi 0'dan büyükse
@@ -32,6 +51,91 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
     });
     super.initState();
   }
+
+  Future<void> _kaydetSecilenIp(String secilenIp) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('secilenIp', secilenIp);
+    secilenIp = prefs.getString('secilenIp') ?? "100";
+  }
+
+  Future<void> _getirSecilenIp() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    secilenIp = prefs.getString('secilenIp') ?? "100";
+    apiUrl = "http://192.168.1.${secilenIp}:8080/login";
+    apiUrlMasaGetir = 'http://192.168.1.${secilenIp}:8080/tables';
+    apiUrlMenuGetir = 'http://192.168.1.${secilenIp}:8080/categories';
+    apiUrlcreateOrder = 'http://192.168.1.${secilenIp}:8080/createOrder';
+    apiUrlOrderDetails =
+        'http://192.168.1.${secilenIp}:8080/createOrderDetails';
+  }
+
+  Future<void> _postData() async {
+    final url = Uri.parse(apiUrlcreateOrder);
+    debugPrint("------------565656---------------------------");
+    debugPrint(widget.masaId.toString());
+
+    final response = await http.post(
+      url,
+      body: {
+        'tableId': widget.masaId.toString(),
+      },
+    ).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      // Başarılı bir şekilde gönderildi.
+      orderId = int.parse(response.body);
+      print('Post isteği başarıyla yapıldı.');
+      print("orderId : ${orderId}");
+      herYemekIcinApiGonder();
+    } else {
+      // İstekte bir hata oluştu.
+      print('Post isteğinde hata oluştu: ${response.statusCode}');
+    }
+  }
+
+  void herYemekIcinApiGonder() {
+    widget.gelenMap.forEach((anahtar, degerler) {
+      double fiyat = degerler[0];
+      int miktar = degerler[1].toInt();
+      int menuId = degerler[2].toInt();
+      if (miktar != 0) {
+        _sendDataToApi(miktar, orderId, menuId, widget.siparisNotu);
+      }
+
+      debugPrint(
+          "--------------------------------------api---------------------------------------");
+    });
+    widget.gelenMap.clear();
+    gercekVerilerMap.clear();
+  }
+
+  Future<void> _sendDataToApi(
+      int quantity, int orderId, int menuId, String orderNote) async {
+    final url = Uri.parse(apiUrlOrderDetails);
+    debugPrint("------------565656---------------------------");
+    debugPrint(widget.masaId.toString());
+
+    final response = await http.post(
+      url,
+      body: {
+        "quantity": quantity.toString(),
+        "orderId": orderId.toString(),
+        "menuId": menuId.toString(),
+        "orderNote": orderNote,
+      },
+    ).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      // Başarılı bir şekilde gönderildi.
+
+      print('Post isteği başarıyla yapıldı.');
+    } else {
+      // İstekte bir hata oluştu.
+      print('Post isteğinde hata oluştu: ${response.statusCode}');
+    }
+  }
+
+//-----------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -237,10 +341,12 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5))),
                       onPressed: () {
+                        _postData();
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) =>
-                                MenuPage(masaNumber: widget.masaNumber),
+                            builder: (context) => MenuPage(
+                                masaNumber: widget.masaNumber,
+                                masaId: widget.masaId),
                           ),
                         );
                       },
@@ -261,6 +367,8 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                 borderRadius: BorderRadius.circular(5)),
                             backgroundColor: yesilButonRengi),
                         onPressed: () {
+                          _postData();
+/*
                           widget.gelenMap.clear();
                           gercekVerilerMap.clear();
                           showDialog(
@@ -279,7 +387,7 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                 builder: (context) => AnaSayfa(),
                               ),
                             );
-                          });
+                          });*/
                         },
                         child: const Text(
                           "Siparişi Gönder",

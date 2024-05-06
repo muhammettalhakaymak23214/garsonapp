@@ -5,6 +5,7 @@ class Menu {
   final double expense;
   final List<String>? ingredients;
   final String categoryName;
+  final double menuId;
 
   Menu({
     required this.id,
@@ -13,6 +14,7 @@ class Menu {
     required this.expense,
     this.ingredients,
     required this.categoryName,
+    required this.menuId,
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class Menu {
           ? List<String>.from(json['ingredients'])
           : null,
       categoryName: json['categoryName'],
+      menuId: json['id'].toDouble(),
     );
   }
 }

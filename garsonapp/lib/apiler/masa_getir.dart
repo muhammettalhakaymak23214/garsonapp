@@ -6,7 +6,7 @@ import 'dart:convert';
 class TableData {
   final int id;
   final int tableNumber;
-  final bool status;
+  final String status;
   final dynamic order;
 
   TableData({

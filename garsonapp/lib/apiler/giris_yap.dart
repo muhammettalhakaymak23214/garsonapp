@@ -16,6 +16,7 @@ class GirisYap {
     BuildContext context,
     TextEditingController controller,
     TextEditingController controller2,
+    String apiUrl,
   ) async {
     /*
     if(){
