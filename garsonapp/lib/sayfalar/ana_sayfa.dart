@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:garsonapp/sabitler/api_url.dart';
+import 'package:flutter/services.dart';
 import 'package:garsonapp/sayfalar/giris_sayfasi.dart';
 import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +12,6 @@ import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Timer'ı sınıfın dışında tanımlayın ki dispose işlevi içinde kullanabilelim
 late Timer _timer;
 
 class AnaSayfa extends StatefulWidget {
@@ -54,20 +53,30 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
     // Diğer anahtar-değer çiftleri buraya eklenir...
   };
-
+/*
   Map<String, Color> statusColors = {
     "Sipariş Hazır": siparisHazir,
     "Sipariş İptal": siparisIptal,
     "Sipariş Beklemede": siparisBeklemede,
   };
-
+*/
   @override
   void initState() {
     super.initState();
     _getirSecilenIp();
-    //fetchOrders(); //sipariş durum apisi
-
     _startTimer();
+  }
+
+  Future<void> _kaydetKullaniciAdi(String kullaniciAdi) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('kullaniciAdi', kullaniciAdi);
+    kullaniciAdi = prefs.getString('kullaniciAdi') ?? "";
+  }
+
+  Future<void> _kaydetParola(String parola) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('parola', parola);
+    parola = prefs.getString('parola') ?? "";
   }
 
   Future<void> _kaydetSecilenIp(String secilenIp) async {
@@ -96,11 +105,8 @@ class _AnaSayfaState extends State<AnaSayfa> {
   void _startTimer() {
     const Duration refreshDuration = Duration(seconds: 3);
     _timer = Timer.periodic(refreshDuration, (timer) {
-      //Apiler
-      //fetchTableData(); // Ekrana bilgileri basan api
-      fetchTableDataSetStateKontrol();
-      //fetchOrders();
-      fetchOrdersDegisiklikTespitApisi(); // Değişiklik tespit etmek için kullanılan api
+      fetchTableDataSetStateKontrol(); // Masalarda değişiklik tespit etmek için kullanılan api
+      fetchOrdersDegisiklikTespitApisi(); //Siparişlerde değişiklik tespit etmek için kullanılan api
     });
   }
 
@@ -117,20 +123,11 @@ class _AnaSayfaState extends State<AnaSayfa> {
         int orderId = data['orderId'];
         String status = data['status'].toString();
         String tableNumberString = tableNumber.toString();
-
         my2Map[orderId] = [tableNumberString, status];
-        // my2Map[tableNumber] = status;
-/*
-         my2Map[tableNumber] = {
-        'status': status,
-        'orderId': orderId,
-      };*/
       }
       debugPrint("**********************************************************");
       debugPrint(my2Map.toString());
       debugPrint("**********************************************************");
-
-      // setState çağırarak arayüzü yenileyin
       setState(() {});
     } else {
       throw Exception('Failed to load orders');
@@ -152,12 +149,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
         String tableNumberString = tableNumber.toString();
 
         my2MapTemp[orderId] = [tableNumberString, status];
-        // my2Map[tableNumber] = status;
-/*
-         my2Map[tableNumber] = {
-        'status': status,
-        'orderId': orderId,
-      };*/
       }
       if (!mapsEqual2(my2Map, my2MapTemp)) {
         debugPrint("eski : $my2Map");
@@ -170,9 +161,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
             "**********************************************************");
         setState(() {});
       }
-
-      // setState çağırarak arayüzü yenileyin
-      //setState(() {});
     } else {
       throw Exception('Failed to load orders');
     }
@@ -224,16 +212,15 @@ class _AnaSayfaState extends State<AnaSayfa> {
     ).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
-      // Başarılı bir şekilde gönderildi.
-
-      print('oldu oldu oldu oldu oldu.');
+      print('API : PostDataSil Apisi başarılı bir şekilde gönderildi.');
     } else {
       // İstekte bir hata oluştu.
-      print('Post isteğinde hata oluştu: ${response.statusCode}');
+      print(
+          'API : PostDataSil Api isteğinde hata oluştu: ${response.statusCode}');
     }
   }
 
-  // Eski veri ile yeni veriyi karşılaştırma işlemini yapan fonskiyon
+  // Eski veri ile yeni veriyi karşılaştırma işlemini yapan fonskiyon Table için
   bool mapsEqual(Map<int, String> map1, Map<int, String> map2) {
     if (map1.length != map2.length) {
       return false;
@@ -246,6 +233,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
     return true;
   }
 
+  // Eski veri ile yeni veriyi karşılaştırma işlemini yapan fonskiyon Siparişler için
   bool mapsEqual2(Map<int, List<String>?> map1, Map<int, List<String>?> map2) {
     if (map1.length != map2.length) {
       return false;
@@ -273,19 +261,114 @@ class _AnaSayfaState extends State<AnaSayfa> {
     return true;
   }
 
+  //Burada Oturumdan çıkma ve uygulamayı kapatma alerti var.
+  Future<void> _oturumuKapatYadaCik(BuildContext context) async {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Color.fromARGB(255, 0, 0, 0).withOpacity(0.80),
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, StateSetter setState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              side: BorderSide(
+                  color: const Color.fromARGB(255, 0, 0, 0), width: 2.0),
+            ),
+            backgroundColor: Color.fromRGBO(51, 51, 51, 1),
+            title: const Text(
+              'Oturumu Kapat veya Uygulamadan Çık',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            ),
+            content: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Divider(color: Colors.white),
+                  const SizedBox(height: 20),
+                  Container(
+                    height: 150,
+                    width: 300,
+                    //color: Colors.pink,
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _kaydetKullaniciAdi("");
+                            _kaydetParola("");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GirisSayfasi(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50,
+                            width: 200,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                    width: 2,
+                                    color:
+                                        const Color.fromARGB(255, 97, 97, 97)),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: const Text(
+                              "Oturumu Kapat",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            SystemNavigator.pop();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50,
+                            width: 200,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                    width: 2,
+                                    color:
+                                        const Color.fromARGB(255, 97, 97, 97)),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: const Text(
+                              "Uygulamayı Kapat",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında giriş sayfasına yönlendir
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GirisSayfasi(), // Giriş sayfası widget'ı
-          ),
-        );
+        SystemNavigator.pop();
         // Geri tuşunun işlenmesini durdur
-        return false;
+        return true;
       },
       child: Scaffold(
         backgroundColor: arkaPlanRengi,
@@ -296,19 +379,71 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 height: 50,
               ),
               Container(
-                decoration: boxDecoreation,
-                height: 40,
-                width: 350,
-                alignment: Alignment.center,
-                child: Text(
-                  "MASALAR",
-                  style: baslikTextStyle,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: IconButton(
+                          onPressed: () {
+                            _oturumuKapatYadaCik(context);
+                            /*
+                            _kaydetKullaniciAdi("");
+                            _kaydetParola("");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GirisSayfasi(),
+                              ),
+                            );
+                            */
+                          },
+                          icon: const Icon(Icons.person),
+                          iconSize: 30, // İkon boyutu
+                          color: Colors.black // İkon rengi
+                          ),
+                    ),
+                    /*
+                    const SizedBox(
+                      width: 20,
+                    ),*/
+                    Container(
+                      width: 20,
+                      height: 4,
+                      color: Colors.white,
+                    ),
+                    Container(
+                      decoration: boxDecoreation,
+                      height: 40,
+                      width: 230,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "MASALAR",
+                        style: baslikTextStyle,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const SizedBox(
+                      width: 70,
+                    ),
+                  ],
                 ),
               ),
               //------------------------------------------------------------------------------------
               Container(
+                // color: Colors.pink,
                 width: 350,
-                height: 280,
+                height: 380,
                 child: FutureBuilder<List<TableData>>(
                   future: fetchTableData(),
                   builder: (context, snapshot) {
@@ -367,11 +502,23 @@ class _AnaSayfaState extends State<AnaSayfa> {
               ),
 
               //------------------------------------------------------------------------------------
-              CustomDivider(),
+              //CustomDivider(),
+              Container(
+                width: 350,
+                height: 5,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5)),
+              ),
+              Container(
+                width: 5,
+                height: 10,
+                color: Colors.white,
+              ),
               Container(
                 decoration: boxDecoreation,
                 height: 40,
-                width: 350,
+                width: 230,
                 alignment: Alignment.center,
                 child: Text(
                   "SİPARİŞLER",
@@ -379,7 +526,8 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 ),
               ),
               Container(
-                height: 400,
+                // color: Colors.pink,
+                height: 300,
                 //padding: EdgeInsets.all(16.0),
                 child: ListView.builder(
                   itemCount: my2Map.length,
@@ -391,42 +539,69 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           .shrink(); // Boş bir widget döndürerek hiçbir şey göstermeyeceğiz
                     }
                     return Container(
-                      //  margin: EdgeInsets.symmetric(vertical: 8.0),
+                      height: 60,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       //padding: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
+                        border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(8.0),
+                        color: value?[1] == 'hazirlaniyor'
+                            ? siparisHazir
+                            : siparisIptal,
                       ),
-                      child: Column(
+                      child: Row(
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Container $key',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 35,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Text(
+                              'Masa : ${value?[0]}',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16),
+                            ),
                           ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'OrderId: $key',
-                            style: TextStyle(color: Colors.white),
+                          const SizedBox(
+                            width: 15,
                           ),
-                          Text(
-                            'Table Number: ${value?[0]}',
-                            style: TextStyle(color: Colors.white),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 35,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Text(
+                              '${value?[1]}', //Status:
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16),
+                            ),
                           ),
-                          Text(
-                            'Status: ${value?[1]}',
-                            style: TextStyle(color: Colors.white),
+                          const SizedBox(
+                            width: 20,
                           ),
-                          TextButton(
-                              onPressed: () {
-                                _postDataSil(key.toString());
-                              },
-                              child: Text(
-                                "Bİr daha gösterme",
-                                style: TextStyle(color: Colors.white),
-                              ))
+                          Container(
+                            height: 35,
+                            width: 35,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: siparisIptal,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: IconButton(
+                                onPressed: () {
+                                  _postDataSil(key.toString());
+                                },
+                                icon: const Icon(Icons.clear),
+                                iconSize: 20, // İkon boyutu
+                                color: Colors.white // İkon rengi
+                                ),
+                          ),
                         ],
                       ),
                     );
@@ -510,3 +685,21 @@ Container(
     );
   }
 }
+
+// belki sonra kullanırım diye 
+/*
+Text(
+                            'OrderId: $key',
+                            style: TextStyle(color: Colors.white),
+                          ),
+*/
+
+  /*
+                          TextButton(
+                              onPressed: () {
+                                _postDataSil(key.toString());
+                              },
+                              child: Text(
+                                "Bİr daha gösterme",
+                                style: TextStyle(color: Colors.white),
+                              ))*/
