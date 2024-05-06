@@ -67,6 +67,7 @@ class _MenuPageState extends State<MenuPage> {
   void _saveText() {
     setState(() {
       savedTextSiparisNotu = textEditingControllerSiparisNotu.text;
+      textEditingControllerSiparisNotu.text = "";
       siparisNotuKaydedildimi = "Sipariş Notu Kaydedildi.";
     });
   }
@@ -128,32 +129,42 @@ class _MenuPageState extends State<MenuPage> {
             if (anyNonZeroQuantity) {
               showDialog(
                 context: context,
+                barrierDismissible: true,
+                barrierColor: Color.fromARGB(255, 0, 0, 0).withOpacity(0.80),
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text("Not Ekleme Ekranı"),
+                    backgroundColor:
+                        Color.fromRGBO(47, 47, 47, 1), // Arka plan rengi gri
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side:
+                          BorderSide(color: Colors.black), // Border rengi siyah
+                    ),
+                    title: Text(
+                      "Not Ekleme Ekranı",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     content: Container(
+                      height: 200,
+                      width: 300,
                       child: Column(
                         children: <Widget>[
                           const Divider(color: Colors.white),
                           const SizedBox(height: 20),
                           TextField(
                             controller: textEditingControllerSiparisNotu,
+                            style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Metni buraya girin',
+                              labelText: 'Sipariş notu giriniz.',
+                              labelStyle: TextStyle(color: Colors.white),
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              _saveText();
-                              /*
-                              Navigator.of(context).pop();
-                              */
-                            },
-                            child: Text("Sipariş Notunu Kaydet"),
+                          const SizedBox(
+                            height: 20,
                           ),
-                          Text(siparisNotuKaydedildimi),
-                          TextButton(
-                            onPressed: () {
+                          GestureDetector(
+                            onTap: () {
+                              _saveText();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -165,58 +176,60 @@ class _MenuPageState extends State<MenuPage> {
                                   ),
                                 ),
                               );
-                              /*
-                              Navigator.of(context).pop();
-                              */
                             },
-                            child: Text("Sepet Sayfasına Git"),
-                          ),
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                      color: Colors.black, width: 2)),
+                              child: const Text(
+                                "Sepet Sayfasına Git",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),
                   );
                 },
               );
-
-              /*
-              TextField(
-              controller: textEditingControllerSiparisNotu,
-              decoration: InputDecoration(
-                labelText: 'Metni buraya girin',
-              ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text("Tamam"),
-                      ), */
-
-              /*
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SepetSayfasi(
-                    masaNumber: widget.masaNumber,
-                    gelenMap: yemekMap,
-                    masaId: widget.masaId,
-                  ),
-                ),
-              );*/
             } else {
               // Hiçbir üründen seçim yapılmamış, uyarı gösterilebilir veya başka bir işlem yapılabilir.
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text("Uyarı"),
+                    backgroundColor: Colors.red, // Arka plan rengi kırmızı
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side:
+                          BorderSide(color: Colors.black), // Border rengi siyah
+                    ),
+                    title: Text(
+                      "Uyarı",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     content: Text(
-                        "Sepete eklemek için en az bir ürün seçmelisiniz."),
+                      "Sepete eklemek için en az bir ürün seçmelisiniz.",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("Tamam"),
+                        child: Text(
+                          "Tamam",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   );
@@ -224,7 +237,7 @@ class _MenuPageState extends State<MenuPage> {
               );
             }
           },
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.send, color: Colors.black),
         ),
         backgroundColor: arkaPlanRengi,
         body: _isLoading // Yükleme durumuna göre gösterilecek widget
@@ -274,7 +287,7 @@ class _MenuPageState extends State<MenuPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: menuData.map<Widget>((category) {
-                                  const Color categoryColor =
+                                  Color categoryColor =
                                       Color.fromARGB(255, 120, 0, 240);
                                   return Container(
                                     margin: const EdgeInsets.only(bottom: 20),
@@ -325,12 +338,11 @@ class _MenuPageState extends State<MenuPage> {
                                                         const EdgeInsets.only(
                                                             bottom: 10),
                                                     decoration: BoxDecoration(
-                                                      color: const Color
-                                                          .fromARGB(
+                                                      color: Color.fromARGB(
                                                           255,
-                                                          255,
-                                                          17,
-                                                          0), // Yemek container rengi
+                                                          53,
+                                                          49,
+                                                          49), // Yemek container rengi
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5),
@@ -342,6 +354,8 @@ class _MenuPageState extends State<MenuPage> {
                                                       children: [
                                                         Container(
                                                           // margin: EdgeInsets.all(5),
+                                                          width: 250,
+
                                                           //color: Colors.amber,
                                                           child: Column(
                                                             children: [
@@ -356,7 +370,7 @@ class _MenuPageState extends State<MenuPage> {
                                                                       Alignment
                                                                           .center,
                                                                   height: 30,
-                                                                  width: 80,
+                                                                  width: 220,
                                                                   margin:
                                                                       const EdgeInsets
                                                                           .all(
@@ -371,99 +385,93 @@ class _MenuPageState extends State<MenuPage> {
                                                                             .center,
                                                                   )),
                                                               Container(
-                                                                  decoration: BoxDecoration(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10)),
-                                                                  alignment:
-                                                                      Alignment
+                                                                height: 40,
+                                                                width: 220,
+                                                                /*color:
+                                                                    Colors.pink,*/
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
                                                                           .center,
-                                                                  height: 30,
-                                                                  width: 80,
-                                                                  margin:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          5),
-                                                                  child: Text(menu[
-                                                                          'price']
-                                                                      .toString())),
+                                                                  children: [
+                                                                    Container(
+                                                                        padding:
+                                                                            EdgeInsets.all(
+                                                                                0),
+                                                                        decoration: BoxDecoration(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            borderRadius: BorderRadius.circular(
+                                                                                10)),
+                                                                        alignment: Alignment
+                                                                            .center,
+                                                                        height:
+                                                                            30,
+                                                                        width:
+                                                                            90,
+                                                                        margin: const EdgeInsets
+                                                                            .all(
+                                                                            0),
+                                                                        child: Text(
+                                                                            menu['price'].toString())),
+                                                                    SizedBox(
+                                                                      width: 40,
+                                                                    ),
+                                                                    Container(
+                                                                        decoration: BoxDecoration(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            borderRadius: BorderRadius.circular(
+                                                                                10)),
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            0),
+                                                                        alignment:
+                                                                            Alignment
+                                                                                .center,
+                                                                        height:
+                                                                            30,
+                                                                        width:
+                                                                            90,
+                                                                        child: Text(
+                                                                            adet.toString())),
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ],
                                                           ),
                                                         ),
                                                         const SizedBox(
-                                                          width: 120,
+                                                          width: 30,
                                                         ),
                                                         Container(
                                                           height: 80,
-                                                          width: 120,
-                                                          //color: Colors.amber,
+                                                          width: 50,
                                                           child: Column(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .center,
                                                             children: [
-                                                              Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
+                                                              Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(0),
+                                                                //color: Colors.white,
+                                                                alignment:
+                                                                    Alignment
                                                                         .center,
-                                                                children: [
-                                                                  Container(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            0),
-                                                                    //color: Colors.white,
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    height: 40,
-                                                                    width: 40,
-                                                                    child:
-                                                                        IconButton(
-                                                                      iconSize:
-                                                                          25,
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      onPressed:
-                                                                          () {
-                                                                        // İkon butona tıklandığında yapılacak işlemler
-                                                                      },
-
-                                                                      icon: const Icon(
-                                                                          Icons
-                                                                              .note_add_rounded,
-                                                                          color:
-                                                                              Colors.white), // Kullanılacak ikon
-                                                                    ),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    width: 40,
-                                                                  ),
-                                                                  Container(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            0),
-                                                                    //color: Colors.white,
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    height: 40,
-                                                                    width: 40,
-                                                                    child:
-                                                                        IconButton(
-                                                                      iconSize:
-                                                                          25,
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      onPressed:
-                                                                          () {
-                                                                        // İkon butona tıklandığında yapılacak işlemler
-                                                                        /*
+                                                                height: 40,
+                                                                width: 40,
+                                                                child:
+                                                                    IconButton(
+                                                                  iconSize: 25,
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  onPressed:
+                                                                      () {
+                                                                    // İkon butona tıklandığında yapılacak işlemler
+                                                                    /*
                                                                   bosStringListesi.add(
                                                                       utf8.decode(menu[
                                                                               'name']
@@ -473,112 +481,87 @@ class _MenuPageState extends State<MenuPage> {
                                                                       bosStringListesi
                                                                           .toString());
     */
-                                                                        adet++;
-                                                                        //adet--;
+                                                                    adet++;
+                                                                    //adet--;
+                                                                    yemekMap
+                                                                        .addAll({
+                                                                      utf8.decode(menu[
+                                                                              'name']
+                                                                          .runes
+                                                                          .toList()): [
+                                                                        menu[
+                                                                            'price'],
+                                                                        adet,
+                                                                        menu['id']
+                                                                            .toDouble()
+                                                                      ]
+                                                                    });
+                                                                    setState(
+                                                                        () {});
+                                                                    debugPrint(
                                                                         yemekMap
-                                                                            .addAll({
-                                                                          utf8.decode(menu['name']
-                                                                              .runes
-                                                                              .toList()): [
-                                                                            menu['price'],
-                                                                            adet,
-                                                                            menu['id'].toDouble()
-                                                                          ]
-                                                                        });
-                                                                        setState(
-                                                                            () {});
-                                                                        debugPrint(
-                                                                            yemekMap.toString());
-                                                                      },
+                                                                            .toString());
+                                                                  },
 
-                                                                      icon: const Icon(
-                                                                          Icons
-                                                                              .add,
-                                                                          color:
-                                                                              Colors.white), // Kullanılacak ikon
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                  icon: const Icon(
+                                                                      Icons.add,
+                                                                      color: Colors
+                                                                          .white), // Kullanılacak ikon
+                                                                ),
                                                               ),
-                                                              Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
+                                                              Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(0),
+                                                                //color: Colors.white,
+                                                                alignment:
+                                                                    Alignment
                                                                         .center,
-                                                                children: [
-                                                                  Container(
-                                                                      decoration: BoxDecoration(
-                                                                          color: Colors
-                                                                              .white,
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              10)),
-                                                                      padding:
-                                                                          const EdgeInsets
-                                                                              .all(
-                                                                              0),
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      height:
-                                                                          30,
-                                                                      width: 70,
-                                                                      child: Text(
-                                                                          adet.toString())),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Container(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            0),
-                                                                    //color: Colors.white,
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    height: 40,
-                                                                    width: 40,
-                                                                    child:
-                                                                        IconButton(
-                                                                      iconSize:
-                                                                          25,
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      onPressed:
-                                                                          () {
-                                                                        // İkon butona tıklandığında yapılacak işlemler
+                                                                height: 40,
+                                                                width: 40,
+                                                                child:
+                                                                    IconButton(
+                                                                  iconSize: 25,
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  onPressed:
+                                                                      () {
+                                                                    // İkon butona tıklandığında yapılacak işlemler
 
-                                                                        if (adet >
-                                                                            0) {
-                                                                          adet =
-                                                                              adet - 1;
-                                                                        }
+                                                                    if (adet >
+                                                                        0) {
+                                                                      adet =
+                                                                          adet -
+                                                                              1;
+                                                                    }
 
+                                                                    yemekMap
+                                                                        .addAll({
+                                                                      utf8.decode(menu[
+                                                                              'name']
+                                                                          .runes
+                                                                          .toList()): [
+                                                                        menu[
+                                                                            'price'],
+                                                                        adet
+                                                                      ]
+                                                                    });
+                                                                    debugPrint(adet
+                                                                        .toString());
+                                                                    setState(
+                                                                        () {});
+                                                                    debugPrint(
                                                                         yemekMap
-                                                                            .addAll({
-                                                                          utf8.decode(menu['name']
-                                                                              .runes
-                                                                              .toList()): [
-                                                                            menu['price'],
-                                                                            adet
-                                                                          ]
-                                                                        });
-                                                                        debugPrint(
-                                                                            adet.toString());
-                                                                        setState(
-                                                                            () {});
-                                                                        debugPrint(
-                                                                            yemekMap.toString());
-                                                                      },
-                                                                      icon: const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.white),
-                                                                      //iconSize: 10,
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                            .toString());
+                                                                  },
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .remove,
+                                                                      color: Colors
+                                                                          .white),
+                                                                  //iconSize: 10,
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
@@ -624,4 +607,29 @@ ListTile(
                                           'Fiyat: ${menu['price']}',
                                         ),
                                       ),
+*/
+
+
+/*
+Container(
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors
+                                                                              .white,
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              10)),
+                                                                      padding:
+                                                                          const EdgeInsets
+                                                                              .all(
+                                                                              0),
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .center,
+                                                                      height:
+                                                                          30,
+                                                                      width: 70,
+                                                                      child: Text(
+                                                                          adet.toString())),
+                                                                  const SizedBox(
+                                                                    width: 10,
+                                                                  ),
 */
