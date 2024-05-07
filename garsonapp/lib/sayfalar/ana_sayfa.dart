@@ -369,6 +369,13 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
   @override
   Widget build(BuildContext context) {
+    double ekranGenisligi =
+        MediaQuery.of(context).size.width; // Ekran genişliğini al
+    double ekranYuksekligi =
+        MediaQuery.of(context).size.height; // Ekran yüksekliğini al
+    double ekranUstBosluk = (ekranYuksekligi / 100) * 5;
+    double ekranYatayBosluk = (ekranGenisligi / 100) * 5;
+    double ekranYaziBoyutu = (ekranYuksekligi / 100) * 2.5;
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında giriş sayfasına yönlendir
@@ -377,23 +384,26 @@ class _AnaSayfaState extends State<AnaSayfa> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: arkaPlanRengi,
+        backgroundColor: arkaPlanRengi, //arkaPlanRengi
         body: Center(
           child: Column(
             children: [
-              const SizedBox(
-                height: 50,
+              SizedBox(
+                height: ekranUstBosluk,
               ),
               Container(
+                //color: Colors.yellow,
+                height: (ekranYuksekligi / 100) * 6,
+                width: ekranGenisligi,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      width: 20,
+                    SizedBox(
+                      width: ekranYatayBosluk,
                     ),
                     Container(
-                      width: 50,
-                      height: 50,
+                      width: (ekranGenisligi / 100) * 15,
+                      height: (ekranYuksekligi / 100) * 6,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: Colors.white),
@@ -401,55 +411,44 @@ class _AnaSayfaState extends State<AnaSayfa> {
                       child: IconButton(
                           onPressed: () {
                             _oturumuKapatYadaCik(context);
-                            /*
-                            _kaydetKullaniciAdi("");
-                            _kaydetParola("");
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => GirisSayfasi(),
-                              ),
-                            );
-                            */
                           },
                           icon: const Icon(Icons.person),
-                          iconSize: 30, // İkon boyutu
+                          iconSize: (ekranYuksekligi / 100) * 3, // İkon boyutu
                           color: Colors.black // İkon rengi
                           ),
                     ),
-                    /*
-                    const SizedBox(
-                      width: 20,
-                    ),*/
                     Container(
-                      width: 20,
+                      width: ekranYatayBosluk,
                       height: 4,
                       color: Colors.white,
                     ),
                     Container(
                       decoration: boxDecoreation,
-                      height: 40,
-                      width: 230,
+                      height: (ekranYuksekligi / 100) * 6,
+                      width: (ekranGenisligi / 100) * 50,
                       alignment: Alignment.center,
                       child: Text(
                         "MASALAR",
-                        style: baslikTextStyle,
+                        style: TextStyle(
+                            fontSize: ekranYaziBoyutu,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const SizedBox(
-                      width: 70,
+                    SizedBox(
+                      width: (ekranGenisligi / 100) * 25,
                     ),
                   ],
                 ),
               ),
-              //------------------------------------------------------------------------------------
+              SizedBox(
+                height: (ekranGenisligi / 100) * 5,
+              ),
+
               Container(
-                // color: Colors.pink,
-                width: 350,
-                height: 380,
+                //color: Color.fromARGB(255, 84, 30, 233),
+                width: (ekranGenisligi / 100) * 90,
+                height: (ekranYuksekligi / 100) * 35,
                 child: FutureBuilder<List<TableData>>(
                   future: fetchTableData(),
                   builder: (context, snapshot) {
@@ -484,6 +483,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                               );
                             },
                             child: Container(
+                              height: (ekranYuksekligi / 100) * 10,
                               decoration: BoxDecoration(
                                 color: containerColor,
                                 border: Border.all(),
@@ -495,7 +495,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                                 style: TextStyle(
                                     color: siyahYaziRengi,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 25),
+                                    fontSize: ekranYaziBoyutu),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -510,7 +510,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
               //------------------------------------------------------------------------------------
               //CustomDivider(),
               Container(
-                width: 350,
+                width: (ekranGenisligi / 100) * 90,
                 height: 5,
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -523,18 +523,24 @@ class _AnaSayfaState extends State<AnaSayfa> {
               ),
               Container(
                 decoration: boxDecoreation,
-                height: 40,
-                width: 230,
+                height: (ekranYuksekligi / 100) * 6,
+                width: (ekranGenisligi / 100) * 50,
                 alignment: Alignment.center,
                 child: Text(
                   "SİPARİŞLER",
-                  style: baslikTextStyle,
+                  style: TextStyle(
+                      fontSize: ekranYaziBoyutu,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
+              SizedBox(
+                height: (ekranGenisligi / 100) * 5,
+              ),
               Container(
-                // color: Colors.pink,
-                height: 300,
-                //padding: EdgeInsets.all(16.0),
+                // color: const Color.fromARGB(255, 40, 30, 233),
+                width: (ekranGenisligi / 100) * 90,
+                height: (ekranYuksekligi / 100) * 37,
                 child: ListView.builder(
                   itemCount: my2Map.length,
                   itemBuilder: (context, index) {
@@ -545,10 +551,11 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           .shrink(); // Boş bir widget döndürerek hiçbir şey göstermeyeceğiz
                     }
                     return Container(
-                      height: 60,
+                      height: (ekranYuksekligi / 100) * 7,
+                      width: (ekranGenisligi / 100) * 90,
                       margin: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                          horizontal: 0, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       //padding: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
@@ -558,43 +565,46 @@ class _AnaSayfaState extends State<AnaSayfa> {
                             : siparisIptal,
                       ),
                       child: Row(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             alignment: Alignment.center,
-                            height: 35,
-                            width: 100,
+                            height: (ekranYuksekligi / 100) * 4,
+                            width: (ekranGenisligi / 100) * 25,
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(5)),
                             child: Text(
                               'Masa : ${value?[0]}',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16),
+                              style: TextStyle(
+                                  fontSize: (ekranYaziBoyutu / 100) * 90,
+                                  //fontWeight: FontWeight.bold,
+                                  color: Colors.black),
                             ),
                           ),
-                          const SizedBox(
-                            width: 15,
+                          SizedBox(
+                            width: (ekranGenisligi / 100) * 2.5,
                           ),
                           Container(
                             alignment: Alignment.center,
-                            height: 35,
-                            width: 150,
+                            height: (ekranYuksekligi / 100) * 4,
+                            width: (ekranGenisligi / 100) * 40,
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(5)),
                             child: Text(
                               '${value?[1]}', //Status:
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16),
+                              style: TextStyle(
+                                  fontSize: (ekranYaziBoyutu / 100) * 90,
+                                  //fontWeight: FontWeight.bold,
+                                  color: Colors.black),
                             ),
                           ),
-                          const SizedBox(
-                            width: 20,
+                          SizedBox(
+                            width: (ekranGenisligi / 100) * 10,
                           ),
                           Container(
-                            height: 35,
-                            width: 35,
+                            height: (ekranGenisligi / 100) * 10,
+                            width: (ekranGenisligi / 100) * 10,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: siparisIptal,
@@ -603,8 +613,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
                                 onPressed: () {
                                   _postDataSil(key.toString());
                                 },
-                                icon: const Icon(Icons.clear),
-                                iconSize: 20, // İkon boyutu
+                                icon: Icon(Icons.clear),
+                                iconSize:
+                                    (ekranYuksekligi / 100) * 2, // İkon boyutu
                                 color: Colors.white // İkon rengi
                                 ),
                           ),
@@ -615,7 +626,35 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 ),
               ),
               ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-              /*
+
+              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// belki sonra kullanırım diye 
+/*
+Text(
+                            'OrderId: $key',
+                            style: TextStyle(color: Colors.white),
+                          ),
+*/
+
+  /*
+                          TextButton(
+                              onPressed: () {
+                                _postDataSil(key.toString());
+                              },
+                              child: Text(
+                                "Bİr daha gösterme",
+                                style: TextStyle(color: Colors.white),
+                              ))*/
+
+                                          /*
 Container(
                 width: 350,
                 height: 400,
@@ -683,29 +722,3 @@ Container(
                 ),
               ),
               */
-              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// belki sonra kullanırım diye 
-/*
-Text(
-                            'OrderId: $key',
-                            style: TextStyle(color: Colors.white),
-                          ),
-*/
-
-  /*
-                          TextButton(
-                              onPressed: () {
-                                _postDataSil(key.toString());
-                              },
-                              child: Text(
-                                "Bİr daha gösterme",
-                                style: TextStyle(color: Colors.white),
-                              ))*/
