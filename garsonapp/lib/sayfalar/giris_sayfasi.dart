@@ -12,37 +12,27 @@ class GirisSayfasi extends StatefulWidget {
 }
 
 class _GirisSayfasiState extends State<GirisSayfasi> {
+  //Kullanıcı Adı ve Parola bu controllerler ile textFieldlerden alınıyor <-------Başladı-------
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-  TextEditingController controllerIp = TextEditingController();
   String kullaniciAdi = "";
   String parola = "";
+  //Kullanıcı Adı ve Parola bu controllerler ile textFieldlerden alınıyor  -------Bitti------->
+  //IP Adresi bu controller ile textFielddan alınıyor <-------Başladı-------
+  TextEditingController controllerIp = TextEditingController();
   String secilenIp = "";
-  String apiUrl = "";
-  String apiUrlMasaGetir = "";
-  String apiUrlMenuGetir = "";
-  bool isChecked = false;
+  //IP Adresi bu controller ile textFieldlerden alınıyor -------Bitti------->
+  String apiUrl = ""; //Login Api url
+  bool isChecked =
+      false; //Kullanıcı Adı ve Parola girildiğinde buton rengi değişir
   bool secilenOturum = false;
+
   Color butonColor = Colors.white;
   Color butonYaziRengi = Colors.black;
 
-  Future<void> _kaydetSecilenIp(String secilenIp) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('secilenIp', secilenIp);
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-  }
-
-  Future<void> _getirSecilenIp() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-    apiUrl = "http://192.168.1.${secilenIp}:8080/login";
-    apiUrlMasaGetir = 'http://192.168.1.${secilenIp}:8080/tables';
-    apiUrlMenuGetir = 'http://192.168.1.${secilenIp}:8080/categories';
-
-    if (secilenIp != "100") {
-      _getirKullaniciAdi();
-    }
-  }
+  /*  
+    ! Kullanıcı Adı , Şifre , Ip Adresleri ve Oturum Açma Seçeneği Telefona Kaydediliyor. <-------Başladı-------
+  */
 
   Future<void> _kaydetKullaniciAdi(String kullaniciAdi) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,17 +40,38 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     kullaniciAdi = prefs.getString('kullaniciAdi') ?? "";
   }
 
+  Future<void> _kaydetParola(String parola) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('parola', parola);
+    parola = prefs.getString('parola') ?? "";
+  }
+
+  Future<void> _kaydetSecilenIp(String secilenIp) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('secilenIp', secilenIp);
+    secilenIp = prefs.getString('secilenIp') ?? "192.168.1.100";
+    // Default IP Adresi : 192.168.1.100
+  }
+
+  Future<void> _kaydetSecilenOturum(bool secilenOturum) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('secilenOturum', secilenOturum);
+    secilenOturum = prefs.getBool('secilenOturum') ?? false;
+  }
+
+  /*  
+    ! Kullanıcı Adı , Şifre ve Ip Adresleri Telefona Kaydediliyor. -------Bitti------->
+  */
+
+  /*  
+    ! Kullanıcı Adı , Şifre , Ip Adresleri ve Oturum Açma Seçeneği Telefondan Getiriliyor. <-------Başladı-------
+  */
+
   Future<void> _getirKullaniciAdi() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     kullaniciAdi = prefs.getString('kullaniciAdi') ?? "";
     controller.text = kullaniciAdi;
     _getirParola();
-  }
-
-  Future<void> _kaydetParola(String parola) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('parola', parola);
-    parola = prefs.getString('parola') ?? "";
   }
 
   Future<void> _getirParola() async {
@@ -70,33 +81,48 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     _getirSecilenOturum();
   }
 
-  Future<void> _kaydetSecilenOturum(bool secilenOturum) async {
+  Future<void> _getirSecilenIp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('secilenOturum', secilenOturum);
-    secilenOturum = prefs.getBool('secilenOturum') ?? false;
+    secilenIp = prefs.getString('secilenIp') ?? "192.168.1.100";
+    apiUrl = "http://${secilenIp}:8080/login";
+    // Default IP Adresi : 192.168.1.100
+    _getirKullaniciAdi();
   }
 
   Future<void> _getirSecilenOturum() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     secilenOturum = prefs.getBool('secilenOturum') ?? false;
     if (secilenOturum == true) {
-      debugPrint("girdigiddsgfdgfdgggggggggggggggggggggggggggg");
-
       _login();
     }
   }
+
+  /*  
+    ! Kullanıcı Adı , Şifre , Ip Adresleri ve Oturum Açma Seçeneği Telefondan Getiriliyor. -------Bitti------->
+  */
+
+  /*  
+    ? Login Api. -------Başladı------->
+  */
 
   Future<void> _login() async {
     await GirisYap.login(context, controller, controller2, apiUrl);
   }
 
-  Future<void> _ipGirisEkrani(BuildContext context) async {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+  /*  
+    ? Login Api. <-------Bitti-------
+  */
+
+  /*  
+    TODO: IP Giriş Alerti. <-------Başladı-------
+  */
+
+  Future<void> _ipGirisEkrani(BuildContext context, double ekranGenisligi,
+      double ekranYuksekligi) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
-      barrierColor: Color.fromARGB(255, 0, 0, 0).withOpacity(0.80),
+      barrierColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.80),
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
@@ -108,55 +134,56 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
             'Ip Giriş Ekranı',
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: Colors.white, fontSize: (screenHeight / 100) * 3),
+                color: Colors.white, fontSize: (ekranYuksekligi / 100) * 2.5),
           ),
           content: Container(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 const Divider(color: Colors.white),
-                const SizedBox(height: 20),
-                TextField(
-                  onChanged: (value) {
-                    setState(
-                      () {},
-                    );
-                  },
-                  controller: controllerIp,
-                  decoration: InputDecoration(
-                    hintText: "Ip adresinin son 3 basamağı",
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
+                SizedBox(height: (ekranYuksekligi / 100) * 2.0),
+                SizedBox(
+                  width: (ekranGenisligi / 100) * 80,
+                  height: (ekranYuksekligi / 100) * 10,
+                  child: TextField(
+                    style: TextStyle(fontSize: (ekranYuksekligi / 100) * 2.5),
+                    onChanged: (value) {
+                      setState(
+                        () {},
+                      );
+                    },
+                    controller: controllerIp,
+                    decoration: InputDecoration(
+                      hintText: "192.168.1.100",
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
+                SizedBox(height: (ekranYuksekligi / 100) * 2.0),
+                //Ip Kaydet Butonu -----------------------------------
+                GestureDetector(
+                  onTap: () {
                     final String seciliIpAdresi = controllerIp.text;
                     _kaydetSecilenIp(seciliIpAdresi);
-
                     _getirSecilenIp();
                     Navigator.pop(context);
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: butonColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
                   child: Container(
-                    width: 150, // Genişlik değeri
-                    height: 50, // Yükseklik değeri
-                    child: Center(
-                      child: Text(
-                        "Kaydet",
-                        style: TextStyle(
-                            color: butonYaziRengi,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
+                    alignment: Alignment.center,
+                    width: (ekranGenisligi / 100) * 40, // Genişlik değeri
+                    height: (ekranYuksekligi / 100) * 6,
+                    decoration: BoxDecoration(
+                        color: butonColor,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Text(
+                      "Kaydet",
+                      style: TextStyle(
+                          color: butonYaziRengi,
+                          fontWeight: FontWeight.bold,
+                          fontSize: (ekranYuksekligi / 100) * 2.5),
                     ),
                   ),
                 ),
@@ -168,6 +195,10 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     );
   }
 
+  /*  
+    TODO: IP Giriş Alerti. -------Bitti------->
+  */
+
   @override
   void initState() {
     _getirSecilenIp();
@@ -175,11 +206,14 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     super.initState();
   }
 
-//_istatistikler(context);
   @override
   Widget build(BuildContext context) {
     bool isFilled1 = controller.text.isNotEmpty;
     bool isFilled2 = controller2.text.isNotEmpty;
+    double ekranGenisligi =
+        MediaQuery.of(context).size.width; // Ekran genişliğini al
+    double ekranYuksekligi =
+        MediaQuery.of(context).size.height; // Ekran yüksekliğini al
 
     return WillPopScope(
       onWillPop: () async {
@@ -189,27 +223,33 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: girisEkraniArkaPlanRengi,
+        backgroundColor: girisEkraniArkaPlanRengi, //girisEkraniArkaPlanRengi
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _ipGirisEkrani(context);
+            _ipGirisEkrani(context, ekranGenisligi, ekranYuksekligi);
           }, // Butona basıldığında sayaçı artır
           tooltip: 'Artır',
-          child: Icon(Icons.network_wifi_2_bar_sharp),
           backgroundColor: Colors.white,
           mini: true,
+          child: const Icon(Icons.network_wifi_2_bar_sharp),
         ),
         body: SingleChildScrollView(
           child: Center(
             child: Column(
               children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                Image.asset('assets/garson_logo.png', height: 300),
                 SizedBox(
-                  width: 350,
+                  height: (ekranYuksekligi / 100) * 5,
+                ),
+                Image.asset('assets/garson_logo.png',
+                    height: (ekranYuksekligi / 100) * 35),
+                SizedBox(
+                  height: (ekranYuksekligi / 100) * 2.5,
+                ),
+                SizedBox(
+                  width: (ekranGenisligi / 100) * 85,
+                  height: (ekranYuksekligi / 100) * 10,
                   child: TextField(
+                    style: TextStyle(fontSize: (ekranYuksekligi / 100) * 2.5),
                     onChanged: (value) {
                       setState(
                         () {
@@ -232,13 +272,15 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
+                SizedBox(
+                  height: (ekranYuksekligi / 100) * 1.5,
                 ),
                 SizedBox(
-                  width: 350,
+                  width: (ekranGenisligi / 100) * 85,
+                  height: (ekranYuksekligi / 100) * 10,
                   child: TextField(
                     controller: controller2,
+                    style: TextStyle(fontSize: (ekranYuksekligi / 100) * 2.5),
                     onChanged: (value) {
                       setState(
                         () {
@@ -260,23 +302,30 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 25,
+                SizedBox(
+                  height: (ekranYuksekligi / 100) * 1.5,
                 ),
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        "Oturumu Açık Tut",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      Text(
+                        "Oturumu Açık Tut: ",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: (ekranYuksekligi / 100) * 2.5),
                       ),
                       Checkbox(
                           activeColor: Colors.green,
                           value: secilenOturum,
                           onChanged: (bool? value) {
                             setState(() {
-                              secilenOturum = value!;
+                              if (value == true) {
+                                secilenOturum = true;
+                              } else if (value == false) {
+                                secilenOturum = false;
+                              }
+                              // secilenOturum = value;
                               _kaydetSecilenOturum(secilenOturum);
 
                               if (secilenOturum == true) {
@@ -288,34 +337,30 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  width: 200,
+                SizedBox(
+                  height: (ekranYuksekligi / 100) * 2.5,
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
-                ElevatedButton(
-                  onPressed: _login,
-
-                  ///butonColor == yesilButonRengi ? _login : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: butonColor,
-                    shape: RoundedRectangleBorder(
+                GestureDetector(
+                  onTap: () {
+                    _login();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: (ekranGenisligi / 100) * 40, // Genişlik değeri
+                    height: (ekranYuksekligi / 100) * 6,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                      ),
+                      color: butonColor,
                       borderRadius: BorderRadius.circular(5),
                     ),
-                  ),
-                  child: Container(
-                    width: 150, // Genişlik değeri
-                    height: 50, // Yükseklik değeri
-
-                    child: Center(
-                      child: Text(
-                        "Giriş Yap",
-                        style: TextStyle(
-                            color: butonYaziRengi,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
+                    child: Text(
+                      "Giriş Yap",
+                      style: TextStyle(
+                          color: butonYaziRengi,
+                          fontWeight: FontWeight.bold,
+                          fontSize: (ekranYuksekligi / 100) * 2.5),
                     ),
                   ),
                 ),

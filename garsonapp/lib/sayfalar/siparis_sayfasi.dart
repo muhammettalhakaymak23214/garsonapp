@@ -1,14 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
 import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 import 'package:garsonapp/sayfalar/sepet_sayfasi.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:garsonapp/sabitler/api_url.dart';
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,10 +19,9 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
+  double _keyboardHeight = 313;
   bool _isLoading = true;
   String secilenIp = "";
-  String apiUrl = "";
-  String apiUrlMasaGetir = "";
   String apiUrlMenuGetir = "";
   late Future<List<Map<String, dynamic>>> _menuData;
   TextEditingController textEditingControllerSiparisNotu =
@@ -49,21 +44,22 @@ class _MenuPageState extends State<MenuPage> {
     //_menuData = fetchData();
   }
 
-  Future<void> _kaydetSecilenIp(String secilenIp) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('secilenIp', secilenIp);
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-  }
-
+  /*  
+    ! Ip Adresi Telefondan Getiriliyor. <-------Başladı-------
+  */
   Future<void> _getirSecilenIp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-    apiUrl = "http://192.168.1.${secilenIp}:8080/login";
-    apiUrlMasaGetir = 'http://192.168.1.${secilenIp}:8080/tables';
-    apiUrlMenuGetir = 'http://192.168.1.${secilenIp}:8080/categories';
+    secilenIp = prefs.getString('secilenIp') ?? "192.168.1.100";
+    apiUrlMenuGetir = 'http://${secilenIp}:8080/categories';
     _menuData = fetchData();
   }
+  /*  
+    ! Ip Adresi Telefondan Getiriliyor. -------Bitti------->
+  */
 
+  /*  
+    ! Sipariş Notunu Kaydet. <-------Başladı-------
+  */
   void _saveText() {
     setState(() {
       savedTextSiparisNotu = textEditingControllerSiparisNotu.text;
@@ -71,6 +67,13 @@ class _MenuPageState extends State<MenuPage> {
       siparisNotuKaydedildimi = "Sipariş Notu Kaydedildi.";
     });
   }
+  /*  
+    ! Sipariş Notunu Kaydet. -------Bitti------->
+  */
+
+  /*  
+    ? Apiler. <-------Başladı-------
+  */
 
   Future<List<Map<String, dynamic>>> fetchData() async {
     yemekMap.clear();
@@ -105,6 +108,10 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
+  /*  
+    ? Apiler. -------Bitti------->
+  */
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -121,12 +128,16 @@ class _MenuPageState extends State<MenuPage> {
         return false;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         floatingActionButton: FloatingActionButton(
           backgroundColor: yesilButonRengi,
           onPressed: () {
             bool anyNonZeroQuantity =
                 yemekMap.values.any((value) => value[1] > 0);
             if (anyNonZeroQuantity) {
+              /*  
+    TODO: Not Ekleme Alerti. <-------Başladı-------
+  */
               showDialog(
                 context: context,
                 barrierDismissible: true,
@@ -153,8 +164,8 @@ class _MenuPageState extends State<MenuPage> {
                           const SizedBox(height: 20),
                           TextField(
                             controller: textEditingControllerSiparisNotu,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
                               labelText: 'Sipariş notu giriniz.',
                               labelStyle: TextStyle(color: Colors.white),
                             ),
@@ -165,8 +176,7 @@ class _MenuPageState extends State<MenuPage> {
                           GestureDetector(
                             onTap: () {
                               _saveText();
-                              Navigator.push(
-                                context,
+                              Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                   builder: (context) => SepetSayfasi(
                                     masaNumber: widget.masaNumber,
@@ -175,6 +185,7 @@ class _MenuPageState extends State<MenuPage> {
                                     siparisNotu: savedTextSiparisNotu,
                                   ),
                                 ),
+                                (Route<dynamic> route) => false,
                               );
                             },
                             child: Container(
@@ -201,8 +212,14 @@ class _MenuPageState extends State<MenuPage> {
                   );
                 },
               );
+              /*  
+    TODO: Not Ekleme Alerti. -------Bitti------->
+  */
             } else {
               // Hiçbir üründen seçim yapılmamış, uyarı gösterilebilir veya başka bir işlem yapılabilir.
+              /*  
+    TODO: Uyarı En Az Bir Ürün Seç Alerti. <-------Başladı-------
+  */
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -213,11 +230,11 @@ class _MenuPageState extends State<MenuPage> {
                       side:
                           BorderSide(color: Colors.black), // Border rengi siyah
                     ),
-                    title: Text(
+                    title: const Text(
                       "Uyarı",
                       style: TextStyle(color: Colors.white),
                     ),
-                    content: Text(
+                    content: const Text(
                       "Sepete eklemek için en az bir ürün seçmelisiniz.",
                       style: TextStyle(color: Colors.white),
                     ),
@@ -226,7 +243,7 @@ class _MenuPageState extends State<MenuPage> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text(
+                        child: const Text(
                           "Tamam",
                           style: TextStyle(color: Colors.white),
                         ),
@@ -235,6 +252,9 @@ class _MenuPageState extends State<MenuPage> {
                   );
                 },
               );
+              /*  
+    TODO: Uyarı En Az Bir Ürün Seç Alerti. -------Bitti------->
+  */
             }
           },
           child: const Icon(Icons.send, color: Colors.black),
@@ -388,7 +408,7 @@ class _MenuPageState extends State<MenuPage> {
                                                                 height: 40,
                                                                 width: 220,
                                                                 /*color:
-                                                                    Colors.pink,*/
+                                                                      Colors.pink,*/
                                                                 child: Row(
                                                                   mainAxisAlignment:
                                                                       MainAxisAlignment
@@ -413,7 +433,7 @@ class _MenuPageState extends State<MenuPage> {
                                                                             .all(
                                                                             0),
                                                                         child: Text(
-                                                                            menu['price'].toString())),
+                                                                            "${menu['price'].toString()} TL")),
                                                                     SizedBox(
                                                                       width: 40,
                                                                     ),
@@ -434,7 +454,7 @@ class _MenuPageState extends State<MenuPage> {
                                                                         width:
                                                                             90,
                                                                         child: Text(
-                                                                            adet.toString())),
+                                                                            "${adet.toInt().toString()} Adet")),
                                                                   ],
                                                                 ),
                                                               ),
@@ -472,15 +492,15 @@ class _MenuPageState extends State<MenuPage> {
                                                                       () {
                                                                     // İkon butona tıklandığında yapılacak işlemler
                                                                     /*
-                                                                  bosStringListesi.add(
-                                                                      utf8.decode(menu[
-                                                                              'name']
-                                                                          .runes
-                                                                          .toList()));
-                                                                  debugPrint(
-                                                                      bosStringListesi
-                                                                          .toString());
-    */
+                                                                    bosStringListesi.add(
+                                                                        utf8.decode(menu[
+                                                                                'name']
+                                                                            .runes
+                                                                            .toList()));
+                                                                    debugPrint(
+                                                                        bosStringListesi
+                                                                            .toString());
+                    */
                                                                     adet++;
                                                                     //adet--;
                                                                     yemekMap

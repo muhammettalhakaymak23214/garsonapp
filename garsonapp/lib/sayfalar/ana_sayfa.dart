@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:garsonapp/apiler/masa_getir.dart';
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
-import 'package:garsonapp/sabitler/divider.dart';
 import 'dart:async';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
@@ -23,49 +22,50 @@ class AnaSayfa extends StatefulWidget {
 
 class _AnaSayfaState extends State<AnaSayfa> {
   Map<int, String> tableStatusMapEski = {};
-
   String secilenIp = "";
-  String apiUrl = "";
+
   String apiUrlMasaGetir = "";
   String apiUrlMenuGetir = "";
   String apiUrlSiparisGetir = "";
   String apiUrlSiparisSil = "";
-
   List<Map<String, dynamic>> orders = [];
-
   Map<int, String> myMap = {};
-
   Map<int, String> tableStatusMap = {};
+  Map<int, List<String>> my2Map = {}; //Galiba sipariş mapi
 
-  Map<int, List<String>> my2Map = {
-    /*
-    0: "Sipariş Hazır",
-    1: "Sipariş Hazır",
-    2: "Sipariş İptal",
-    3: "Sipariş Beklemede",
-    4: "Sipariş Hazır",
-    5: "Sipariş Hazır",
-    6: "Sipariş Hazır",
-    7: "Sipariş İptal",
-    8: "Sipariş Beklemede",
-    9: "Sipariş Hazır",
-    */
-
-    // Diğer anahtar-değer çiftleri buraya eklenir...
-  };
-/*
-  Map<String, Color> statusColors = {
-    "Sipariş Hazır": siparisHazir,
-    "Sipariş İptal": siparisIptal,
-    "Sipariş Beklemede": siparisBeklemede,
-  };
-*/
   @override
   void initState() {
     super.initState();
     _getirSecilenIp();
     _startTimer();
   }
+
+  /* 
+    ! Dispose ve Start Timer. <-------Başladı-------
+  */
+
+  @override
+  void dispose() {
+    // Timer durdurulmalı, aksi halde hafızada sızıntı olabilir
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    const Duration refreshDuration = Duration(seconds: 1);
+    _timer = Timer.periodic(refreshDuration, (timer) {
+      fetchTableDataSetStateKontrol(); // Masalarda değişiklik tespit etmek için kullanılan api
+      fetchOrdersDegisiklikTespitApisi(); //Siparişlerde değişiklik tespit etmek için kullanılan api
+    });
+  }
+
+  /* 
+    ! Dispose ve Start Timer. -------Bitti------->
+  */
+
+  /*  
+    ! Kullanıcı Adı , Şifre Telefona Kaydediliyor. <-------Başladı-------
+  */
 
   Future<void> _kaydetKullaniciAdi(String kullaniciAdi) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -79,36 +79,30 @@ class _AnaSayfaState extends State<AnaSayfa> {
     parola = prefs.getString('parola') ?? "";
   }
 
-  Future<void> _kaydetSecilenIp(String secilenIp) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('secilenIp', secilenIp);
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-  }
+  /*  
+    ! Kullanıcı Adı , Şifre Telefona Kaydediliyor. -------Bitti------->
+  */
+
+  /*  
+    ! Ip Adresi Telefondan Getiriliyor. <-------Başladı-------
+  */
 
   Future<void> _getirSecilenIp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-    apiUrl = "http://192.168.1.${secilenIp}:8080/login";
-    apiUrlMasaGetir = 'http://192.168.1.${secilenIp}:8080/tables';
-    apiUrlMenuGetir = 'http://192.168.1.${secilenIp}:8080/categories';
-    apiUrlSiparisGetir = 'http://192.168.1.${secilenIp}:8080/getOrdersByStatus';
-    apiUrlSiparisSil = 'http://192.168.1.${secilenIp}:8080/dontShowOrder';
+    secilenIp = prefs.getString('secilenIp') ?? "192.168.1.100";
+
+    apiUrlMasaGetir = 'http://${secilenIp}:8080/tables';
+    apiUrlSiparisGetir = 'http://${secilenIp}:8080/getOrdersByStatus';
+    apiUrlSiparisSil = 'http://${secilenIp}:8080/dontShowOrder';
   }
 
-  @override
-  void dispose() {
-    // Timer durdurulmalı, aksi halde hafızada sızıntı olabilir
-    _timer.cancel();
-    super.dispose();
-  }
+  /*  
+    ! Ip Adresi Telefondan Getiriliyor. -------Bitti------->
+  */
 
-  void _startTimer() {
-    const Duration refreshDuration = Duration(seconds: 3);
-    _timer = Timer.periodic(refreshDuration, (timer) {
-      fetchTableDataSetStateKontrol(); // Masalarda değişiklik tespit etmek için kullanılan api
-      fetchOrdersDegisiklikTespitApisi(); //Siparişlerde değişiklik tespit etmek için kullanılan api
-    });
-  }
+  /*  
+    ? Apiler. <-------Başladı-------
+  */
 
   Future<void> fetchOrders() async {
     final response = await http.get(Uri.parse(
@@ -261,6 +255,14 @@ class _AnaSayfaState extends State<AnaSayfa> {
     return true;
   }
 
+  /*  
+    ? Apiler. -------Bitti------->
+  */
+
+  /*  
+    TODO: Oturumdan Çıkma ve Uygulamayı Kapatma Alerti. <-------Başladı-------
+  */
+
   //Burada Oturumdan çıkma ve uygulamayı kapatma alerti var.
   Future<void> _oturumuKapatYadaCik(BuildContext context) async {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -360,6 +362,10 @@ class _AnaSayfaState extends State<AnaSayfa> {
       },
     );
   }
+
+  /*  
+    TODO: Oturumdan Çıkma ve Uygulamayı Kapatma Alerti. -------Bitti------->
+  */
 
   @override
   Widget build(BuildContext context) {

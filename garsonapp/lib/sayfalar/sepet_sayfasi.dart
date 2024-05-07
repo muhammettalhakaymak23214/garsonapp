@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
-import 'package:garsonapp/sabitler/divider.dart';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
 import 'package:garsonapp/sayfalar/ana_sayfa.dart';
@@ -30,12 +28,10 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
   int orderId = 0;
   int tableId = 0; //-----------------------
   String secilenIp = "";
-  String apiUrl = "";
-  String apiUrlMasaGetir = "";
-  String apiUrlMenuGetir = "";
   String apiUrlcreateOrder = "";
   String apiUrlOrderDetails = "";
   Map<String, List<double>> gercekVerilerMap = {};
+
   @override
   void initState() {
     _getirSecilenIp();
@@ -52,22 +48,24 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
     super.initState();
   }
 
-  Future<void> _kaydetSecilenIp(String secilenIp) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('secilenIp', secilenIp);
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-  }
+  /*  
+    ! Ip Adresi Telefondan Getiriliyor. <-------Başladı-------
+  */
 
   Future<void> _getirSecilenIp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    secilenIp = prefs.getString('secilenIp') ?? "100";
-    apiUrl = "http://192.168.1.${secilenIp}:8080/login";
-    apiUrlMasaGetir = 'http://192.168.1.${secilenIp}:8080/tables';
-    apiUrlMenuGetir = 'http://192.168.1.${secilenIp}:8080/categories';
-    apiUrlcreateOrder = 'http://192.168.1.${secilenIp}:8080/createOrder';
-    apiUrlOrderDetails =
-        'http://192.168.1.${secilenIp}:8080/createOrderDetails';
+    secilenIp = prefs.getString('secilenIp') ?? "192.168.1.100";
+    apiUrlcreateOrder = 'http://${secilenIp}:8080/createOrder';
+    apiUrlOrderDetails = 'http://${secilenIp}:8080/createOrderDetails';
   }
+
+  /*  
+    ! Ip Adresi Telefondan Getiriliyor. -------Bitti------->
+  */
+
+  /*  
+    ? Apiler. <-------Başladı-------
+  */
 
   Future<void> _postData() async {
     final url = Uri.parse(apiUrlcreateOrder);
@@ -135,270 +133,377 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
     }
   }
 
-//-----------------------------
+  /*  
+    ? Apiler. <-------Başladı-------
+  */
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: arkaPlanRengi,
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 50,
-            ),
-            // Masa bilgisi(başlık)
-            Container(
-              height: 40,
-              width: 350,
-              alignment: Alignment.center,
-              decoration: boxDecoreation,
-              child: Text(
-                "Masa : ${widget.masaNumber.toString()}",
-                style: baslikTextStyle,
+    return WillPopScope(
+      onWillPop: () async {
+        // Geri tuşuna basıldığında yapılacak işlemler
+        // Örneğin:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) =>
+                MenuPage(masaNumber: widget.masaNumber, masaId: widget.masaId),
+          ),
+        ); // Bir önceki sayfaya gitmek için
+        // true döndürerek geri tuşunun varsayılan işlemi olan uygulamayı kapatmayı önleyebilirsiniz
+        return false; // false döndürerek uygulamanın kapanmasını önleyebilirsiniz
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: arkaPlanRengi,
+        body: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 50,
               ),
-            ),
-            // Boşluk
-            const SizedBox(
-              height: 10,
-            ),
-            // Gelen Map içindeki her bir anahtar için container oluşturma
-            Container(
-              height: 670,
-              width: 380,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Color.fromARGB(103, 253, 253, 253),
+              // Masa bilgisi(başlık)
+              Container(
+                height: 40,
+                width: 350,
+                alignment: Alignment.center,
+                decoration: boxDecoreation,
+                child: Text(
+                  "Masa : ${widget.masaNumber.toString()}",
+                  style: baslikTextStyle,
+                ),
               ),
-              // padding: const EdgeInsets.all(5),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    width: 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color.fromARGB(255, 255, 255, 255),
+              // Boşluk
+              const SizedBox(
+                height: 10,
+              ),
+              // Gelen Map içindeki her bir anahtar için container oluşturma
+              Container(
+                height: 670,
+                width: 380,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color.fromARGB(255, 69, 67, 67),
+                ),
+                // padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 10,
                     ),
-                    child: const Text(
-                      "Siparişler",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 30),
+                    Container(
+                      alignment: Alignment.center,
+                      width: 200,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color.fromRGBO(255, 254, 254, 1),
+                      ),
+                      child: const Text(
+                        "Siparişler",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 30, color: Color.fromARGB(255, 0, 0, 0)),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    height: 590,
-                    //  color: Color.fromARGB(255, 0, 252, 84),
-                    margin: EdgeInsets.only(left: 10, right: 10),
-                    //padding: EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 5),
-                          padding: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          height: 50,
-                          width: 350,
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 72, 72, 61),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                height: 30,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                ),
-                                alignment: Alignment.center,
-                                child: Text("Ad", textAlign: TextAlign.center),
-                              ),
-                              Container(
-                                height: 30,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                ),
-                                alignment: Alignment.center,
-                                child:
-                                    Text("Fiyat", textAlign: TextAlign.center),
-                              ),
-                              Container(
-                                height: 30,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                ),
-                                alignment: Alignment.center,
-                                child:
-                                    Text("Adet", textAlign: TextAlign.center),
-                              ),
-                            ],
-                          ),
-                        ),
-                        CustomDivider(),
-                        Container(
-                          height: 500,
-                          //   color: const Color.fromARGB(251, 0, 0, 0),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: gercekVerilerMap.keys.map((key) {
-                                return Container(
-                                  margin: EdgeInsets.symmetric(vertical: 5),
-                                  padding: EdgeInsets.all(10),
-                                  width: 350,
-                                  height: 50,
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: 580,
+                      //color: Color.fromARGB(255, 0, 252, 84),
+                      margin: EdgeInsets.only(left: 10, right: 10),
+                      //padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.all(10),
+                            alignment: Alignment.center,
+                            height: 50,
+                            width: 350,
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(255, 255, 255, 1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 150,
                                   decoration: BoxDecoration(
-                                    color: Color.fromARGB(255, 72, 72, 61),
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(5),
+                                    color:
+                                        const Color.fromARGB(255, 50, 50, 50),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Anahtar
-                                      Container(
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    "Ad",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  height: 30,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Color.fromARGB(255, 50, 50, 50),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    "Fiyat",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  height: 30,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Color.fromARGB(255, 50, 50, 50),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    "Adet",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          //CustomDivider(),
+                          Divider(
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            height: 20,
+                            thickness: 2,
+                          ),
+                          Container(
+                            //color: Colors.pink,
+                            height: 480,
+                            //   color: const Color.fromARGB(251, 0, 0, 0),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: gercekVerilerMap.keys.map((key) {
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(vertical: 5),
+                                    padding: EdgeInsets.all(10),
+                                    width: 350,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: Color.fromRGBO(255, 255, 255, 1),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Anahtar
+                                        Container(
+                                            height: 30,
+                                            width: 150,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Color.fromARGB(
+                                                  255, 50, 50, 50),
+                                            ),
+                                            child: Text(
+                                              key,
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            )),
+                                        // Değer listesinin ilk elemanı (sol)
+                                        Container(
                                           height: 30,
-                                          width: 150,
+                                          width: 100,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(5),
-                                            color: Colors.white,
+                                            color:
+                                                Color.fromARGB(255, 50, 50, 50),
                                           ),
-                                          child: Text(key)),
-                                      // Değer listesinin ilk elemanı (sol)
-                                      Container(
-                                        height: 30,
-                                        width: 100,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          color: Colors.white,
+                                          child: Text(
+                                            gercekVerilerMap[key]?[0]
+                                                    ?.toString() ??
+                                                '',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
                                         ),
-                                        child: Text(gercekVerilerMap[key]?[0]
-                                                ?.toString() ??
-                                            ''),
-                                      ),
-                                      // Değer listesinin ikinci elemanı (sağ)
-                                      Container(
-                                        height: 30,
-                                        width: 50,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          color: Colors.white,
+                                        // Değer listesinin ikinci elemanı (sağ)
+                                        Container(
+                                          height: 30,
+                                          width: 50,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color:
+                                                Color.fromARGB(255, 50, 50, 50),
+                                          ),
+                                          child: Text(
+                                            gercekVerilerMap[key]?[1]
+                                                    ?.toString() ??
+                                                '',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
                                         ),
-                                        child: Text(gercekVerilerMap[key]?[1]
-                                                ?.toString() ??
-                                            ''),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              // color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    // color: Color.fromARGB(255, 112, 0, 249),
-                    width: 150,
-                    margin: EdgeInsets.only(left: 20),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: status401,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5))),
-                      onPressed: () {
-                        _postData();
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => MenuPage(
-                                masaNumber: widget.masaNumber,
-                                masaId: widget.masaId),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Vazgeç",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                        ],
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 20),
-                    //color: Colors.amber,
-                    width: 150,
-                    child: ElevatedButton(
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: 50,
+                // color: Colors.red,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      // color: Color.fromARGB(255, 112, 0, 249),
+                      width: 150,
+                      margin: EdgeInsets.only(left: 20),
+                      child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                            backgroundColor: status401,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            backgroundColor: yesilButonRengi),
+                                borderRadius: BorderRadius.circular(5))),
                         onPressed: () {
-                          _postData();
-/*
-                          widget.gelenMap.clear();
-                          gercekVerilerMap.clear();
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              // Alert dialog oluşturma
-                              return const AlertDialog(
-                                title: Text('Sipariş Gönderildi'),
-                                // content: Text('Bu bir alerttir.'),
-                              );
-                            },
+                          //_postData();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => MenuPage(
+                                  masaNumber: widget.masaNumber,
+                                  masaId: widget.masaId),
+                            ),
                           );
-                          Timer(Duration(seconds: 1), () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => AnaSayfa(),
-                              ),
-                            );
-                          });*/
                         },
                         child: const Text(
-                          "Siparişi Gönder",
+                          "Vazgeç",
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
-                        )),
-                  ),
-                ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 5,
+                      width: 70,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            siparisIptal,
+                            siparisHazir
+                          ], // Sol taraf kırmızı, sağ taraf yeşil
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(right: 20),
+                      //color: Colors.amber,
+                      width: 150,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              backgroundColor: yesilButonRengi),
+                          onPressed: () {
+                            _postData();
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                // Alert dialog oluşturma
+                                return AlertDialog(
+                                  backgroundColor:
+                                      siparisHazir, // Arka plan rengi kırmızı
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        5.0), // Border radius 5
+                                    side: BorderSide(
+                                        color:
+                                            Colors.black), // Border rengi siyah
+                                  ),
+                                  title: Text(
+                                    'Sipariş Gönderildi',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  // content: Text('Bu bir alerttir.'),
+                                );
+                              },
+                            );
+                            Timer(Duration(seconds: 1), () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => AnaSayfa(),
+                                ),
+                              );
+                            });
+                            /*
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AnaSayfa(), // Giriş sayfası widget'ı
+                              ),
+                            );*/
+                            /*
+                            widget.gelenMap.clear();
+                            gercekVerilerMap.clear();
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                // Alert dialog oluşturma
+                                return const AlertDialog(
+                                  title: Text('Sipariş Gönderildi'),
+                                  // content: Text('Bu bir alerttir.'),
+                                );
+                              },
+                            );
+                            Timer(Duration(seconds: 1), () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => AnaSayfa(),
+                                ),
+                              );
+                            });*/
+                          },
+                          child: const Text(
+                            "Siparişi Gönder",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
