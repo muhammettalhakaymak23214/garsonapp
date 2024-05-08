@@ -129,7 +129,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
             borderRadius: BorderRadius.circular(5.0),
             side: BorderSide(color: arkaPlanRengi, width: 2.0),
           ),
-          backgroundColor: Colors.black,
+          backgroundColor: alertArkaPlanRengi,
           title: Text(
             'Ip Giriş Ekranı',
             textAlign: TextAlign.center,

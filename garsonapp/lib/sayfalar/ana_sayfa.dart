@@ -264,13 +264,12 @@ class _AnaSayfaState extends State<AnaSayfa> {
   */
 
   //Burada Oturumdan çıkma ve uygulamayı kapatma alerti var.
-  Future<void> _oturumuKapatYadaCik(BuildContext context) async {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+  Future<void> _oturumuKapatYadaCik(BuildContext context,
+      double ekranYuksekligi, double ekranGenisligi) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
-      barrierColor: Color.fromARGB(255, 0, 0, 0).withOpacity(0.80),
+      barrierColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.80),
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, StateSetter setState) {
           return AlertDialog(
@@ -279,79 +278,63 @@ class _AnaSayfaState extends State<AnaSayfa> {
               side: BorderSide(
                   color: const Color.fromARGB(255, 0, 0, 0), width: 2.0),
             ),
-            backgroundColor: Color.fromRGBO(51, 51, 51, 1),
-            title: const Text(
+            backgroundColor: alertArkaPlanRengi,
+            title: Text(
               'Oturumu Kapat veya Uygulamadan Çık',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 15),
+              style: TextStyle(
+                  color: Colors.white, fontSize: (ekranYuksekligi / 100) * 2.5),
             ),
             content: Container(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const Divider(color: Colors.white),
-                  const SizedBox(height: 20),
-                  Container(
-                    height: 150,
-                    width: 300,
-                    //color: Colors.pink,
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _kaydetKullaniciAdi("");
-                            _kaydetParola("");
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => GirisSayfasi(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 50,
-                            width: 200,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                    width: 2,
-                                    color:
-                                        const Color.fromARGB(255, 97, 97, 97)),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: const Text(
-                              "Oturumu Kapat",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15),
-                            ),
-                          ),
+                  SizedBox(height: (ekranYuksekligi / 100) * 2.0),
+                  GestureDetector(
+                    onTap: () {
+                      _kaydetKullaniciAdi("");
+                      _kaydetParola("");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GirisSayfasi(),
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            SystemNavigator.pop();
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 50,
-                            width: 200,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                    width: 2,
-                                    color:
-                                        const Color.fromARGB(255, 97, 97, 97)),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: const Text(
-                              "Uygulamayı Kapat",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15),
-                            ),
-                          ),
-                        ),
-                      ],
+                      );
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: (ekranGenisligi / 100) * 40, // Genişlik değeri
+                      height: (ekranYuksekligi / 100) * 6,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Text(
+                        "Oturumu Kapat",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: (ekranYuksekligi / 100) * 2.0),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: (ekranYuksekligi / 100) * 2.0),
+                  GestureDetector(
+                    onTap: () {
+                      SystemNavigator.pop();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: (ekranGenisligi / 100) * 40, // Genişlik değeri
+                      height: (ekranYuksekligi / 100) * 6,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Text(
+                        "Uygulamayı Kapat",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: (ekranYuksekligi / 100) * 2.0),
+                      ),
                     ),
                   ),
                 ],
@@ -410,7 +393,8 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           borderRadius: BorderRadius.circular(5)),
                       child: IconButton(
                           onPressed: () {
-                            _oturumuKapatYadaCik(context);
+                            _oturumuKapatYadaCik(
+                                context, ekranYuksekligi, ekranGenisligi);
                           },
                           icon: const Icon(Icons.person),
                           iconSize: (ekranYuksekligi / 100) * 3, // İkon boyutu
@@ -442,7 +426,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 ),
               ),
               SizedBox(
-                height: (ekranGenisligi / 100) * 5,
+                height: (ekranYuksekligi / 100) * 2,
               ),
 
               Container(
@@ -535,7 +519,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                 ),
               ),
               SizedBox(
-                height: (ekranGenisligi / 100) * 5,
+                height: (ekranGenisligi / 100) * 2,
               ),
               Container(
                 // color: const Color.fromARGB(255, 40, 30, 233),
@@ -566,12 +550,16 @@ class _AnaSayfaState extends State<AnaSayfa> {
                       ),
                       child: Row(
                         children: [
+                          SizedBox(
+                            width: (ekranGenisligi / 100) * 2,
+                          ),
                           Container(
                             alignment: Alignment.center,
                             height: (ekranYuksekligi / 100) * 4,
                             width: (ekranGenisligi / 100) * 25,
                             decoration: BoxDecoration(
                                 color: Colors.white,
+                                border: Border.all(color: Colors.black),
                                 borderRadius: BorderRadius.circular(5)),
                             child: Text(
                               'Masa : ${value?[0]}',
@@ -587,9 +575,10 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           Container(
                             alignment: Alignment.center,
                             height: (ekranYuksekligi / 100) * 4,
-                            width: (ekranGenisligi / 100) * 40,
+                            width: (ekranGenisligi / 100) * 38,
                             decoration: BoxDecoration(
                                 color: Colors.white,
+                                border: Border.all(color: Colors.black),
                                 borderRadius: BorderRadius.circular(5)),
                             child: Text(
                               '${value?[1]}', //Status:
@@ -607,7 +596,8 @@ class _AnaSayfaState extends State<AnaSayfa> {
                             width: (ekranGenisligi / 100) * 10,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: siparisIptal,
+                                color: Colors.white,
+                                border: Border.all(color: Colors.black),
                                 borderRadius: BorderRadius.circular(5)),
                             child: IconButton(
                                 onPressed: () {
@@ -616,7 +606,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                                 icon: Icon(Icons.clear),
                                 iconSize:
                                     (ekranYuksekligi / 100) * 2, // İkon boyutu
-                                color: Colors.white // İkon rengi
+                                color: Colors.black // İkon rengi
                                 ),
                           ),
                         ],

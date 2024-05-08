@@ -23,3 +23,5 @@ var statusUnknownError = Color.fromARGB(255, 255, 140, 0);
 //Bekleme Göstergesi Renkleri :
 var circularProgressIndicatorRengi = const Color.fromARGB(255, 0, 255, 4);
 //Sepet Ekranı Renkleri :
+
+var alertArkaPlanRengi = Color.fromARGB(255, 27, 27, 27);

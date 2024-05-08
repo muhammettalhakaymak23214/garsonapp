@@ -114,6 +114,13 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    double ekranGenisligi =
+        MediaQuery.of(context).size.width; // Ekran genişliğini al
+    double ekranYuksekligi =
+        MediaQuery.of(context).size.height; // Ekran yüksekliğini al
+    double ekranUstBosluk = (ekranYuksekligi / 100) * 5;
+    double ekranYatayBosluk = (ekranGenisligi / 100) * 5;
+    double ekranYaziBoyutu = (ekranYuksekligi / 100) * 2.5;
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında giriş sayfasına yönlendir
@@ -131,6 +138,7 @@ class _MenuPageState extends State<MenuPage> {
         resizeToAvoidBottomInset: false,
         floatingActionButton: FloatingActionButton(
           backgroundColor: yesilButonRengi,
+          mini: true,
           onPressed: () {
             bool anyNonZeroQuantity =
                 yemekMap.values.any((value) => value[1] > 0);
@@ -144,8 +152,7 @@ class _MenuPageState extends State<MenuPage> {
                 barrierColor: Color.fromARGB(255, 0, 0, 0).withOpacity(0.80),
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    backgroundColor:
-                        Color.fromRGBO(47, 47, 47, 1), // Arka plan rengi gri
+                    backgroundColor: alertArkaPlanRengi, // Arka plan rengi gri
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       side:
@@ -153,7 +160,9 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                     title: Text(
                       "Not Ekleme Ekranı",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: (ekranYuksekligi / 100) * 2.5),
                     ),
                     content: Container(
                       height: 200,
@@ -165,9 +174,11 @@ class _MenuPageState extends State<MenuPage> {
                           TextField(
                             controller: textEditingControllerSiparisNotu,
                             style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Sipariş notu giriniz.',
-                              labelStyle: TextStyle(color: Colors.white),
+                              labelStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: (ekranYuksekligi / 100) * 2.0),
                             ),
                           ),
                           const SizedBox(
@@ -197,11 +208,11 @@ class _MenuPageState extends State<MenuPage> {
                                   borderRadius: BorderRadius.circular(5),
                                   border: Border.all(
                                       color: Colors.black, width: 2)),
-                              child: const Text(
+                              child: Text(
                                 "Sepet Sayfasına Git",
                                 style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 15,
+                                    fontSize: (ekranYuksekligi / 100) * 2.0,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -224,28 +235,35 @@ class _MenuPageState extends State<MenuPage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    backgroundColor: Colors.red, // Arka plan rengi kırmızı
+                    backgroundColor: Color.fromARGB(
+                        255, 255, 17, 0), // Arka plan rengi kırmızı
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       side:
                           BorderSide(color: Colors.black), // Border rengi siyah
                     ),
-                    title: const Text(
+                    title: Text(
                       "Uyarı",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: (ekranYuksekligi / 100) * 2.5),
                     ),
-                    content: const Text(
+                    content: Text(
                       "Sepete eklemek için en az bir ürün seçmelisiniz.",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: (ekranYuksekligi / 100) * 2.0),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text(
+                        child: Text(
                           "Tamam",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: (ekranYuksekligi / 100) * 2.0),
                         ),
                       ),
                     ],
@@ -267,23 +285,26 @@ class _MenuPageState extends State<MenuPage> {
                 child: Column(
                   children: [
                     //Ekran üstü boşluk
-                    const SizedBox(
-                      height: 50,
+                    SizedBox(
+                      height: ekranUstBosluk,
                     ),
                     //Masa bilgisi(başlık)
                     Container(
-                      height: 40,
-                      width: 350,
+                      height: (ekranYuksekligi / 100) * 6,
+                      width: (ekranGenisligi / 100) * 50,
                       alignment: Alignment.center,
                       decoration: boxDecoreation,
                       child: Text(
                         "Masa : ${widget.masaNumber.toString()}",
-                        style: baslikTextStyle,
+                        style: TextStyle(
+                            fontSize: ekranYaziBoyutu,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                     ),
                     //Boşluk
-                    const SizedBox(
-                      height: 10,
+                    SizedBox(
+                      height: (ekranYuksekligi / 100) * 2,
                     ),
                     //Menü oluşturuluyor----------------
                     FutureBuilder<List<Map<String, dynamic>>>(
@@ -299,19 +320,21 @@ class _MenuPageState extends State<MenuPage> {
                         } else if (snapshot.hasData) {
                           List<Map<String, dynamic>> menuData = snapshot.data!;
                           return Container(
-                            height: 750,
+                            height: (ekranYuksekligi / 100) * 87,
+                            width: ekranGenisligi,
                             //color: Colors.pink,
-                            // color: arkaPlanRengi,
-                            padding: const EdgeInsets.all(20),
+                            color: arkaPlanRengi,
+                            //padding: const EdgeInsets.all(20),
                             child: SingleChildScrollView(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: menuData.map<Widget>((category) {
-                                  Color categoryColor =
-                                      Color.fromARGB(255, 120, 0, 240);
                                   return Container(
-                                    margin: const EdgeInsets.only(bottom: 20),
-                                    padding: const EdgeInsets.all(10),
+                                    //  width: (ekranGenisligi / 100) * 20,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: (ekranGenisligi / 100) * 5,
+                                        vertical: (ekranYuksekligi / 100) * 2),
+                                    //padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       // color: categoryColor,
                                       color: const Color.fromARGB(
@@ -323,15 +346,21 @@ class _MenuPageState extends State<MenuPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
+                                          SizedBox(
+                                            height: (ekranYuksekligi / 100) * 2,
+                                          ),
                                           Text(
                                             category['name'],
                                             textAlign: TextAlign.center,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 20,
+                                              fontSize:
+                                                  (ekranYuksekligi / 100) * 2.5,
                                             ),
                                           ),
-                                          const SizedBox(height: 5),
+                                          SizedBox(
+                                            height: (ekranYuksekligi / 100) * 2,
+                                          ),
                                           Column(
                                             children: List.generate(
                                               category['menus'].length,
@@ -349,19 +378,23 @@ class _MenuPageState extends State<MenuPage> {
                                                             .toList())]![1]
                                                     : 0;
                                                 return Container(
-                                                    height: 100,
-                                                    width: 350,
+                                                    height: (ekranYuksekligi /
+                                                            100) *
+                                                        10,
+                                                    width:
+                                                        (ekranGenisligi / 100) *
+                                                            84,
+                                                    /*
                                                     padding:
                                                         const EdgeInsets.all(
                                                             10),
+                                                            */
                                                     margin:
                                                         const EdgeInsets.only(
                                                             bottom: 10),
                                                     decoration: BoxDecoration(
-                                                      color: Color.fromARGB(
-                                                          255,
-                                                          53,
-                                                          49,
+                                                      color: const Color
+                                                          .fromARGB(255, 53, 49,
                                                           49), // Yemek container rengi
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -374,9 +407,16 @@ class _MenuPageState extends State<MenuPage> {
                                                       children: [
                                                         Container(
                                                           // margin: EdgeInsets.all(5),
-                                                          width: 250,
+                                                          width:
+                                                              (ekranGenisligi /
+                                                                      100) *
+                                                                  60,
+                                                          height:
+                                                              (ekranYuksekligi /
+                                                                      100) *
+                                                                  10,
 
-                                                          //color: Colors.amber,
+                                                          // color: Colors.amber,
                                                           child: Column(
                                                             children: [
                                                               Container(
@@ -389,53 +429,84 @@ class _MenuPageState extends State<MenuPage> {
                                                                   alignment:
                                                                       Alignment
                                                                           .center,
-                                                                  height: 30,
-                                                                  width: 220,
-                                                                  margin:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          5),
+                                                                  height: (ekranYuksekligi /
+                                                                          100) *
+                                                                      4,
+                                                                  width: (ekranGenisligi /
+                                                                          100) *
+                                                                      55,
+                                                                  margin: EdgeInsets
+                                                                      .symmetric(
+                                                                    vertical:
+                                                                        (ekranYuksekligi /
+                                                                                100) *
+                                                                            0.5,
+                                                                  ),
                                                                   child: Text(
-                                                                    utf8.decode(menu[
-                                                                            'name']
-                                                                        .runes
-                                                                        .toList()),
+                                                                    utf8.decode(
+                                                                      menu['name']
+                                                                          .runes
+                                                                          .toList(),
+                                                                    ),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            (ekranYuksekligi / 100) *
+                                                                                1.5,
+                                                                        color: Colors
+                                                                            .black),
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,
                                                                   )),
                                                               Container(
-                                                                height: 40,
-                                                                width: 220,
-                                                                /*color:
-                                                                      Colors.pink,*/
+                                                                height:
+                                                                    (ekranYuksekligi /
+                                                                            100) *
+                                                                        4,
+                                                                width:
+                                                                    (ekranGenisligi /
+                                                                            100) *
+                                                                        55,
+                                                                /* color:
+                                                                    Colors.pink,*/
+                                                                margin: EdgeInsets
+                                                                    .symmetric(
+                                                                  vertical:
+                                                                      (ekranYuksekligi /
+                                                                              100) *
+                                                                          0.5,
+                                                                ),
                                                                 child: Row(
                                                                   mainAxisAlignment:
                                                                       MainAxisAlignment
                                                                           .center,
                                                                   children: [
                                                                     Container(
-                                                                        padding:
-                                                                            EdgeInsets.all(
-                                                                                0),
                                                                         decoration: BoxDecoration(
                                                                             color: Colors
                                                                                 .white,
                                                                             borderRadius: BorderRadius.circular(
                                                                                 10)),
-                                                                        alignment: Alignment
-                                                                            .center,
+                                                                        alignment:
+                                                                            Alignment
+                                                                                .center,
                                                                         height:
-                                                                            30,
-                                                                        width:
-                                                                            90,
-                                                                        margin: const EdgeInsets
-                                                                            .all(
-                                                                            0),
-                                                                        child: Text(
-                                                                            "${menu['price'].toString()} TL")),
+                                                                            (ekranYuksekligi / 100) *
+                                                                                4,
+                                                                        width: (ekranGenisligi /
+                                                                                100) *
+                                                                            25,
+                                                                        child:
+                                                                            Text(
+                                                                          "${menu['price'].toString()} TL",
+                                                                          style: TextStyle(
+                                                                              fontSize: (ekranYuksekligi / 100) * 1.5,
+                                                                              color: Colors.black),
+                                                                        )),
                                                                     SizedBox(
-                                                                      width: 40,
+                                                                      width:
+                                                                          (ekranGenisligi / 100) *
+                                                                              5,
                                                                     ),
                                                                     Container(
                                                                         decoration: BoxDecoration(
@@ -443,48 +514,67 @@ class _MenuPageState extends State<MenuPage> {
                                                                                 .white,
                                                                             borderRadius: BorderRadius.circular(
                                                                                 10)),
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            0),
                                                                         alignment:
                                                                             Alignment
                                                                                 .center,
                                                                         height:
-                                                                            30,
-                                                                        width:
-                                                                            90,
-                                                                        child: Text(
-                                                                            "${adet.toInt().toString()} Adet")),
+                                                                            (ekranYuksekligi / 100) *
+                                                                                4,
+                                                                        width: (ekranGenisligi /
+                                                                                100) *
+                                                                            25,
+                                                                        child:
+                                                                            Text(
+                                                                          "${adet.toInt().toString()} Adet",
+                                                                          style: TextStyle(
+                                                                              fontSize: (ekranYuksekligi / 100) * 1.5,
+                                                                              color: Colors.black),
+                                                                        )),
                                                                   ],
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
                                                         ),
-                                                        const SizedBox(
-                                                          width: 30,
+                                                        SizedBox(
+                                                          width:
+                                                              (ekranGenisligi /
+                                                                      100) *
+                                                                  12,
                                                         ),
                                                         Container(
-                                                          height: 80,
-                                                          width: 50,
+                                                          //color: Colors.blue,
+                                                          height:
+                                                              (ekranYuksekligi /
+                                                                      100) *
+                                                                  10,
+                                                          width:
+                                                              (ekranGenisligi /
+                                                                      100) *
+                                                                  10,
                                                           child: Column(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .center,
                                                             children: [
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(0),
-                                                                //color: Colors.white,
                                                                 alignment:
                                                                     Alignment
                                                                         .center,
-                                                                height: 40,
-                                                                width: 40,
+                                                                height:
+                                                                    (ekranYuksekligi /
+                                                                            100) *
+                                                                        5,
+                                                                width:
+                                                                    (ekranYuksekligi /
+                                                                            100) *
+                                                                        5,
                                                                 child:
                                                                     IconButton(
-                                                                  iconSize: 25,
+                                                                  iconSize:
+                                                                      (ekranYuksekligi /
+                                                                              100) *
+                                                                          2.5,
                                                                   alignment:
                                                                       Alignment
                                                                           .center,
@@ -530,18 +620,23 @@ class _MenuPageState extends State<MenuPage> {
                                                                 ),
                                                               ),
                                                               Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(0),
-                                                                //color: Colors.white,
                                                                 alignment:
                                                                     Alignment
                                                                         .center,
-                                                                height: 40,
-                                                                width: 40,
+                                                                height:
+                                                                    (ekranYuksekligi /
+                                                                            100) *
+                                                                        5,
+                                                                width:
+                                                                    (ekranYuksekligi /
+                                                                            100) *
+                                                                        5,
                                                                 child:
                                                                     IconButton(
-                                                                  iconSize: 25,
+                                                                  iconSize:
+                                                                      (ekranYuksekligi /
+                                                                              100) *
+                                                                          2.5,
                                                                   alignment:
                                                                       Alignment
                                                                           .center,
@@ -605,7 +700,8 @@ class _MenuPageState extends State<MenuPage> {
                             ),
                           );
                         } else {
-                          return const Center(child: Text('No data available'));
+                          return const Center(
+                              child: Text('DATA YOK - DATA YOK'));
                         }
                       },
                     ),
