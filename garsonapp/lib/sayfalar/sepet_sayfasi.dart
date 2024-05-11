@@ -139,6 +139,13 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
 
   @override
   Widget build(BuildContext context) {
+    double ekranGenisligi =
+        MediaQuery.of(context).size.width; // Ekran genişliğini al
+    double ekranYuksekligi =
+        MediaQuery.of(context).size.height; // Ekran yüksekliğini al
+    double ekranUstBosluk = (ekranYuksekligi / 100) * 5;
+    double ekranYatayBosluk = (ekranGenisligi / 100) * 5;
+    double ekranYaziBoyutu = (ekranYuksekligi / 100) * 2.5;
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında yapılacak işlemler
@@ -158,117 +165,133 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
         body: Center(
           child: Column(
             children: [
-              const SizedBox(
-                height: 50,
+              SizedBox(
+                height: ekranUstBosluk,
               ),
               // Masa bilgisi(başlık)
               Container(
-                height: 40,
-                width: 350,
+                height: (ekranYuksekligi / 100) * 6,
+                width: (ekranGenisligi / 100) * 50,
                 alignment: Alignment.center,
                 decoration: boxDecoreation,
                 child: Text(
                   "Masa : ${widget.masaNumber.toString()}",
-                  style: baslikTextStyle,
+                  style: TextStyle(
+                      fontSize: ekranYaziBoyutu,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
               // Boşluk
-              const SizedBox(
-                height: 10,
+              SizedBox(
+                height: (ekranYuksekligi / 100) * 2,
               ),
               // Gelen Map içindeki her bir anahtar için container oluşturma
               Container(
-                height: 670,
-                width: 380,
+                height: (ekranYuksekligi / 100) * 78,
+                width: (ekranGenisligi / 100) * 95,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: Color.fromARGB(255, 69, 67, 67),
+                  color: Color.fromARGB(255, 76, 72, 72),
                 ),
                 // padding: const EdgeInsets.all(5),
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 10,
+                      height: (ekranYuksekligi / 100) * 2,
                     ),
                     Container(
                       alignment: Alignment.center,
-                      width: 200,
-                      height: 50,
+                      height: (ekranYuksekligi / 100) * 6,
+                      width: (ekranGenisligi / 100) * 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Color.fromRGBO(255, 254, 254, 1),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Siparişler",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 30, color: Color.fromARGB(255, 0, 0, 0)),
+                            fontSize: ekranYaziBoyutu,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
+                    SizedBox(
+                      height: (ekranYuksekligi / 100) * 2,
                     ),
                     Container(
-                      height: 580,
-                      //color: Color.fromARGB(255, 0, 252, 84),
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      //padding: EdgeInsets.all(10),
+                      height: (ekranYuksekligi / 100) * 65,
+                      width: (ekranGenisligi / 100) * 90,
+                      // color: Color.fromARGB(255, 0, 252, 84),
                       child: Column(
                         children: [
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 5),
-                            padding: EdgeInsets.all(10),
+                            //  padding: EdgeInsets.all(10),
                             alignment: Alignment.center,
-                            height: 50,
-                            width: 350,
+                            height: (ekranYuksekligi / 100) * 6,
+                            width: (ekranGenisligi / 100) * 85,
                             decoration: BoxDecoration(
                               color: Color.fromRGBO(255, 255, 255, 1),
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Container(
-                                  height: 30,
-                                  width: 150,
+                                  height: (ekranYuksekligi / 100) * 4,
+                                  width: (ekranGenisligi / 100) * 35,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color:
                                         const Color.fromARGB(255, 50, 50, 50),
                                   ),
                                   alignment: Alignment.center,
-                                  child: const Text(
+                                  child: Text(
                                     "Ad",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                        fontSize: (ekranYuksekligi / 100) * 2.0,
+                                        //fontWeight: FontWeight.bold,
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255)),
                                   ),
                                 ),
                                 Container(
-                                  height: 30,
-                                  width: 100,
+                                  height: (ekranYuksekligi / 100) * 4,
+                                  width: (ekranGenisligi / 100) * 30,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color: Color.fromARGB(255, 50, 50, 50),
                                   ),
                                   alignment: Alignment.center,
-                                  child: const Text(
+                                  child: Text(
                                     "Fiyat",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                        fontSize: (ekranYuksekligi / 100) * 2.0,
+                                        //fontWeight: FontWeight.bold,
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255)),
                                   ),
                                 ),
                                 Container(
-                                  height: 30,
-                                  width: 50,
+                                  height: (ekranYuksekligi / 100) * 4,
+                                  width: (ekranGenisligi / 100) * 15,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color: Color.fromARGB(255, 50, 50, 50),
                                   ),
                                   alignment: Alignment.center,
-                                  child: const Text(
+                                  child: Text(
                                     "Adet",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                        fontSize: (ekranYuksekligi / 100) * 2.0,
+                                        //fontWeight: FontWeight.bold,
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255)),
                                   ),
                                 ),
                               ],
@@ -277,33 +300,34 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                           //CustomDivider(),
                           Divider(
                             color: const Color.fromARGB(255, 255, 255, 255),
-                            height: 20,
+                            //height: 20,
                             thickness: 2,
                           ),
                           Container(
-                            //color: Colors.pink,
-                            height: 480,
+                            //  color: Colors.pink,
+                            height: (ekranYuksekligi / 100) * 54,
+                            width: (ekranGenisligi / 100) * 85,
                             //   color: const Color.fromARGB(251, 0, 0, 0),
                             child: SingleChildScrollView(
                               child: Column(
                                 children: gercekVerilerMap.keys.map((key) {
                                   return Container(
                                     margin: EdgeInsets.symmetric(vertical: 5),
-                                    padding: EdgeInsets.all(10),
-                                    width: 350,
-                                    height: 50,
+                                    //padding: EdgeInsets.all(10),
+                                    height: (ekranYuksekligi / 100) * 6,
+                                    width: (ekranGenisligi / 100) * 85,
                                     decoration: BoxDecoration(
                                       color: Color.fromRGBO(255, 255, 255, 1),
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceAround,
                                       children: [
                                         // Anahtar
                                         Container(
-                                            height: 30,
-                                            width: 150,
+                                            height: (ekranYuksekligi / 100) * 4,
+                                            width: (ekranGenisligi / 100) * 35,
                                             alignment: Alignment.center,
                                             decoration: BoxDecoration(
                                               borderRadius:
@@ -314,12 +338,17 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                             child: Text(
                                               key,
                                               style: TextStyle(
-                                                  color: Colors.white),
+                                                  fontSize:
+                                                      (ekranYuksekligi / 100) *
+                                                          2.0,
+                                                  //fontWeight: FontWeight.bold,
+                                                  color: const Color.fromARGB(
+                                                      255, 255, 255, 255)),
                                             )),
                                         // Değer listesinin ilk elemanı (sol)
                                         Container(
-                                          height: 30,
-                                          width: 100,
+                                          height: (ekranYuksekligi / 100) * 4,
+                                          width: (ekranGenisligi / 100) * 30,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -331,14 +360,19 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                             gercekVerilerMap[key]?[0]
                                                     ?.toString() ??
                                                 '',
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                            style: TextStyle(
+                                                fontSize:
+                                                    (ekranYuksekligi / 100) *
+                                                        2.0,
+                                                //fontWeight: FontWeight.bold,
+                                                color: const Color.fromARGB(
+                                                    255, 255, 255, 255)),
                                           ),
                                         ),
                                         // Değer listesinin ikinci elemanı (sağ)
                                         Container(
-                                          height: 30,
-                                          width: 50,
+                                          height: (ekranYuksekligi / 100) * 4,
+                                          width: (ekranGenisligi / 100) * 15,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -348,10 +382,16 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                           ),
                                           child: Text(
                                             gercekVerilerMap[key]?[1]
-                                                    ?.toString() ??
+                                                    ?.toInt()
+                                                    .toString() ??
                                                 '',
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                            style: TextStyle(
+                                                fontSize:
+                                                    (ekranYuksekligi / 100) *
+                                                        2.0,
+                                                //fontWeight: FontWeight.bold,
+                                                color: const Color.fromARGB(
+                                                    255, 255, 255, 255)),
                                           ),
                                         ),
                                       ],
@@ -364,25 +404,27 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
+                    SizedBox(
+                      height: (ekranYuksekligi / 100) * 2,
                     ),
                   ],
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: (ekranYuksekligi / 100) * 2,
               ),
               Container(
-                height: 50,
-                // color: Colors.red,
+                height: (ekranYuksekligi / 100) * 6,
+                width: ekranGenisligi,
+                // color: Color.fromARGB(255, 1, 254, 246),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       // color: Color.fromARGB(255, 112, 0, 249),
-                      width: 150,
-                      margin: EdgeInsets.only(left: 20),
+                      height: (ekranYuksekligi / 100) * 5,
+                      width: (ekranGenisligi / 100) * 35,
+                      margin: EdgeInsets.only(left: (ekranGenisligi / 100) * 5),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: status401,
@@ -398,16 +440,19 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                             ),
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           "Vazgeç",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                              fontSize: (ekranYuksekligi / 100) * 2.0,
+                              // fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 255, 255, 255)),
                         ),
                       ),
                     ),
                     Container(
                       height: 5,
-                      width: 70,
+                      width: (ekranGenisligi / 100) * 20,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.centerLeft,
@@ -420,9 +465,10 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(right: 20),
-                      //color: Colors.amber,
-                      width: 150,
+                      height: (ekranYuksekligi / 100) * 5,
+                      width: (ekranGenisligi / 100) * 35,
+                      margin:
+                          EdgeInsets.only(right: (ekranGenisligi / 100) * 5),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -463,44 +509,22 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                 ),
                               );
                             });
-                            /*
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AnaSayfa(), // Giriş sayfası widget'ı
-                              ),
-                            );*/
-                            /*
-                            widget.gelenMap.clear();
-                            gercekVerilerMap.clear();
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                // Alert dialog oluşturma
-                                return const AlertDialog(
-                                  title: Text('Sipariş Gönderildi'),
-                                  // content: Text('Bu bir alerttir.'),
-                                );
-                              },
-                            );
-                            Timer(Duration(seconds: 1), () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => AnaSayfa(),
-                                ),
-                              );
-                            });*/
                           },
-                          child: const Text(
+                          child: Text(
                             "Siparişi Gönder",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                                fontSize: (ekranYuksekligi / 100) * 2.0,
+                                // fontWeight: FontWeight.bold,
+                                color:
+                                    const Color.fromARGB(255, 255, 255, 255)),
                           )),
                     ),
                   ],
                 ),
+              ),
+              SizedBox(
+                height: (ekranYuksekligi / 100) * 1,
               ),
             ],
           ),

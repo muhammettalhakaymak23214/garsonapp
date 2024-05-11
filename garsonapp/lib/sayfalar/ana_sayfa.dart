@@ -530,7 +530,8 @@ class _AnaSayfaState extends State<AnaSayfa> {
                   itemBuilder: (context, index) {
                     var key = my2Map.keys.elementAt(index);
                     var value = my2Map[key];
-                    if (value?[1] == "gosterme") {
+                    if (value?[1] == "gosterme" ||
+                        value?[1] == "gostermeonay") {
                       return SizedBox
                           .shrink(); // Boş bir widget döndürerek hiçbir şey göstermeyeceğiz
                     }
@@ -545,8 +546,12 @@ class _AnaSayfaState extends State<AnaSayfa> {
                         border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(8.0),
                         color: value?[1] == 'hazirlaniyor'
-                            ? siparisHazir
-                            : siparisIptal,
+                            ? statusTimeOut // Sarı
+                            : (value?[1] == 'iptal'
+                                ? status401 // Kırmızı
+                                : (value?[1] == 'onaylandi'
+                                    ? yesilButonRengi
+                                    : Colors.transparent)),
                       ),
                       child: Row(
                         children: [
