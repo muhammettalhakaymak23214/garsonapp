@@ -7,6 +7,7 @@ import 'package:garsonapp/sayfalar/sepet_sayfasi.dart';
 import 'package:http/http.dart' as http;
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class MenuPage extends StatefulWidget {
   final int masaNumber;
@@ -33,6 +34,7 @@ class _MenuPageState extends State<MenuPage> {
 
 //sepet sayfasına gidecek örnek veri
   Map<String, List<double>> yemekMap = {};
+  bool sesDurumu = true;
 
   // double adet = 0;
 //-------------------------
@@ -42,6 +44,13 @@ class _MenuPageState extends State<MenuPage> {
     _getirSecilenIp();
     super.initState();
     //_menuData = fetchData();
+  }
+
+  void sesCal() {
+    if (sesDurumu == true) {
+      final player = AudioPlayer();
+      player.play(AssetSource('pokemon-a-button.wav'));
+    }
   }
 
   /*  
@@ -140,6 +149,7 @@ class _MenuPageState extends State<MenuPage> {
           backgroundColor: yesilButonRengi,
           mini: true,
           onPressed: () {
+            sesCal();
             bool anyNonZeroQuantity =
                 yemekMap.values.any((value) => value[1] > 0);
             if (anyNonZeroQuantity) {
@@ -186,6 +196,7 @@ class _MenuPageState extends State<MenuPage> {
                           ),
                           GestureDetector(
                             onTap: () {
+                              sesCal();
                               _saveText();
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
@@ -257,6 +268,7 @@ class _MenuPageState extends State<MenuPage> {
                     actions: [
                       TextButton(
                         onPressed: () {
+                          sesCal();
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -590,7 +602,9 @@ class _MenuPageState extends State<MenuPage> {
                                                                     debugPrint(
                                                                         bosStringListesi
                                                                             .toString());
+
                     */
+                                                                    sesCal();
                                                                     adet++;
                                                                     //adet--;
                                                                     yemekMap
@@ -642,6 +656,7 @@ class _MenuPageState extends State<MenuPage> {
                                                                           .center,
                                                                   onPressed:
                                                                       () {
+                                                                    sesCal();
                                                                     // İkon butona tıklandığında yapılacak işlemler
 
                                                                     if (adet >

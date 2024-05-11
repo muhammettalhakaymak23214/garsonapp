@@ -7,6 +7,7 @@ import 'package:garsonapp/sabitler/text_style.dart';
 import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class SepetSayfasi extends StatefulWidget {
   final int masaNumber;
@@ -31,6 +32,7 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
   String apiUrlcreateOrder = "";
   String apiUrlOrderDetails = "";
   Map<String, List<double>> gercekVerilerMap = {};
+  bool sesDurumu = true;
 
   @override
   void initState() {
@@ -46,6 +48,13 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
       }
     });
     super.initState();
+  }
+
+  void sesCal() {
+    if (sesDurumu == true) {
+      final player = AudioPlayer();
+      player.play(AssetSource('pokemon-a-button.wav'));
+    }
   }
 
   /*  
@@ -432,6 +441,7 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                 borderRadius: BorderRadius.circular(5))),
                         onPressed: () {
                           //_postData();
+                          sesCal();
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => MenuPage(
@@ -475,6 +485,7 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
                                   borderRadius: BorderRadius.circular(5)),
                               backgroundColor: yesilButonRengi),
                           onPressed: () {
+                            sesCal();
                             _postData();
                             showDialog(
                               context: context,

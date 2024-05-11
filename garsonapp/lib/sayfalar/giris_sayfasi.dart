@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:garsonapp/apiler/giris_yap.dart';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GirisSayfasi extends StatefulWidget {
   const GirisSayfasi({Key? key}) : super(key: key);
@@ -26,9 +27,17 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
   bool isChecked =
       false; //Kullanıcı Adı ve Parola girildiğinde buton rengi değişir
   bool secilenOturum = false;
+  bool sesDurumu = true;
 
   Color butonColor = Colors.white;
   Color butonYaziRengi = Colors.black;
+
+  void sesCal() {
+    if (sesDurumu == true) {
+      final player = AudioPlayer();
+      player.play(AssetSource('pokemon-a-button.wav'));
+    }
+  }
 
   /*  
     ! Kullanıcı Adı , Şifre , Ip Adresleri ve Oturum Açma Seçeneği Telefona Kaydediliyor. <-------Başladı-------
@@ -320,6 +329,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                           value: secilenOturum,
                           onChanged: (bool? value) {
                             setState(() {
+                              sesCal();
                               if (value == true) {
                                 secilenOturum = true;
                               } else if (value == false) {
@@ -342,6 +352,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                 ),
                 GestureDetector(
                   onTap: () {
+                    sesCal();
                     _login();
                   },
                   child: Container(

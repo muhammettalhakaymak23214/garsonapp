@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:garsonapp/sabitler/text_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 late Timer _timer;
 
@@ -31,13 +32,22 @@ class _AnaSayfaState extends State<AnaSayfa> {
   List<Map<String, dynamic>> orders = [];
   Map<int, String> myMap = {};
   Map<int, String> tableStatusMap = {};
-  Map<int, List<String>> my2Map = {}; //Galiba sipariş mapi
+  Map<int, List<String>> my2Map =
+      {}; //Galiba sipariş mapiibool sesDurumu = true;
+  bool sesDurumu = true;
 
   @override
   void initState() {
     super.initState();
     _getirSecilenIp();
     _startTimer();
+  }
+
+  void sesCal() {
+    if (sesDurumu == true) {
+      final player = AudioPlayer();
+      player.play(AssetSource('pokemon-a-button.wav'));
+    }
   }
 
   /* 
@@ -293,6 +303,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                   SizedBox(height: (ekranYuksekligi / 100) * 2.0),
                   GestureDetector(
                     onTap: () {
+                      sesCal();
                       _kaydetKullaniciAdi("");
                       _kaydetParola("");
                       Navigator.push(
@@ -320,6 +331,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                   SizedBox(height: (ekranYuksekligi / 100) * 2.0),
                   GestureDetector(
                     onTap: () {
+                      sesCal();
                       SystemNavigator.pop();
                     },
                     child: Container(
@@ -393,6 +405,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           borderRadius: BorderRadius.circular(5)),
                       child: IconButton(
                           onPressed: () {
+                            sesCal();
                             _oturumuKapatYadaCik(
                                 context, ekranYuksekligi, ekranGenisligi);
                           },
@@ -457,6 +470,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                                   : bosMasaRengi;
                           return GestureDetector(
                             onTap: () {
+                              sesCal();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -606,6 +620,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                                 borderRadius: BorderRadius.circular(5)),
                             child: IconButton(
                                 onPressed: () {
+                                  sesCal();
                                   _postDataSil(key.toString());
                                 },
                                 icon: Icon(Icons.clear),
