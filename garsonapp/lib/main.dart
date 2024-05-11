@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:garsonapp/bildirim/flutter_local_notification.dart';
 import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 import 'package:garsonapp/sayfalar/giris_sayfasi.dart';
 import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
 
-void main() {
+void main() async {
+  await WidgetsFlutterBinding.ensureInitialized();
+  NotificationHelper.initialize();
   runApp(const MyApp());
 }
 

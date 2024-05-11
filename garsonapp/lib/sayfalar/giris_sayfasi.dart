@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:garsonapp/apiler/giris_yap.dart';
+import 'package:garsonapp/bildirim/flutter_local_notification.dart';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:vibration/vibration.dart'; //
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+int id = 0;
 
 class GirisSayfasi extends StatefulWidget {
   const GirisSayfasi({Key? key}) : super(key: key);
@@ -33,6 +37,11 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
   Color butonColor = Colors.white;
   Color butonYaziRengi = Colors.black;
   bool titresimDurumu = true;
+
+  /// Note: permissions aren't requested here just to demonstrate that can be
+  /// done later
+
+//--
 
   void sesCal() {
     if (sesDurumu == true) {
@@ -102,6 +111,9 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     controller2.text = parola;
     _getirSecilenOturum();
   }
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> _getirSecilenIp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -224,6 +236,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
   @override
   void initState() {
     _getirSecilenIp();
+    NotificationHelper.initialize();
     // TODO: implement initState
     super.initState();
   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:garsonapp/bildirim/flutter_local_notification.dart';
 import 'package:garsonapp/sayfalar/giris_sayfasi.dart';
 import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
 import 'package:http/http.dart' as http;
@@ -37,6 +38,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
       {}; //Galiba sipariş mapiibool sesDurumu = true;
   bool sesDurumu = true;
   bool titresimDurumu = true;
+  int bildirimSinirlama = 0;
 
   @override
   void initState() {
@@ -176,6 +178,17 @@ class _AnaSayfaState extends State<AnaSayfa> {
         debugPrint(my2Map.toString());
         debugPrint(
             "**********************************************************");
+
+        if (bildirimSinirlama == 1) {
+          NotificationHelper.showNotification(
+            id: 0,
+            title: 'Sipariş Durumunda Güncelleme',
+            body: '',
+            payload: 'ekstra veri',
+          );
+        }
+        bildirimSinirlama = 1;
+
         setState(() {});
       }
     } else {
@@ -634,6 +647,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                             child: IconButton(
                                 onPressed: () {
                                   sesCal();
+                                  bildirimSinirlama = 0;
                                   _postDataSil(key.toString());
                                 },
                                 icon: Icon(Icons.clear),
