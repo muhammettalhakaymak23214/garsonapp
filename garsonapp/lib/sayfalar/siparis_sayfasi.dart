@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:garsonapp/sabitler/boxDecoreation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:vibration/vibration.dart'; //
 
 class MenuPage extends StatefulWidget {
   final int masaNumber;
@@ -35,6 +36,7 @@ class _MenuPageState extends State<MenuPage> {
 //sepet sayfasına gidecek örnek veri
   Map<String, List<double>> yemekMap = {};
   bool sesDurumu = true;
+  bool titresimDurumu = true;
 
   // double adet = 0;
 //-------------------------
@@ -50,6 +52,17 @@ class _MenuPageState extends State<MenuPage> {
     if (sesDurumu == true) {
       final player = AudioPlayer();
       player.play(AssetSource('pokemon-a-button.wav'));
+      titresimCal();
+    }
+  }
+
+  void titresimCal() async {
+    // Telefonun titreşim özelliğinin bulunup bulunmadığını kontrol et
+    bool? hasVibrator = await Vibration.hasVibrator();
+
+    // hasVibrator değeri null değilse ve true ise, titreşimi başlat
+    if ((hasVibrator == true) && (titresimDurumu == true)) {
+      Vibration.vibrate(duration: 75);
     }
   }
 

@@ -8,6 +8,7 @@ import 'package:garsonapp/sayfalar/ana_sayfa.dart';
 import 'package:garsonapp/sayfalar/siparis_sayfasi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:vibration/vibration.dart'; //
 
 class SepetSayfasi extends StatefulWidget {
   final int masaNumber;
@@ -33,6 +34,7 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
   String apiUrlOrderDetails = "";
   Map<String, List<double>> gercekVerilerMap = {};
   bool sesDurumu = true;
+  bool titresimDurumu = true;
 
   @override
   void initState() {
@@ -54,6 +56,17 @@ class _SepetSayfasiState extends State<SepetSayfasi> {
     if (sesDurumu == true) {
       final player = AudioPlayer();
       player.play(AssetSource('pokemon-a-button.wav'));
+      titresimCal();
+    }
+  }
+
+  void titresimCal() async {
+    // Telefonun titreşim özelliğinin bulunup bulunmadığını kontrol et
+    bool? hasVibrator = await Vibration.hasVibrator();
+
+    // hasVibrator değeri null değilse ve true ise, titreşimi başlat
+    if ((hasVibrator == true) && (titresimDurumu == true)) {
+      Vibration.vibrate(duration: 75);
     }
   }
 

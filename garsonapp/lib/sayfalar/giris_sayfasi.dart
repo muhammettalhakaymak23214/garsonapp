@@ -4,6 +4,7 @@ import 'package:garsonapp/apiler/giris_yap.dart';
 import 'package:garsonapp/sabitler/renkler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:vibration/vibration.dart'; //
 
 class GirisSayfasi extends StatefulWidget {
   const GirisSayfasi({Key? key}) : super(key: key);
@@ -31,11 +32,23 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
 
   Color butonColor = Colors.white;
   Color butonYaziRengi = Colors.black;
+  bool titresimDurumu = true;
 
   void sesCal() {
     if (sesDurumu == true) {
       final player = AudioPlayer();
       player.play(AssetSource('pokemon-a-button.wav'));
+      titresimCal();
+    }
+  }
+
+  void titresimCal() async {
+    // Telefonun titreşim özelliğinin bulunup bulunmadığını kontrol et
+    bool? hasVibrator = await Vibration.hasVibrator();
+
+    // hasVibrator değeri null değilse ve true ise, titreşimi başlat
+    if ((hasVibrator == true) && (titresimDurumu == true)) {
+      Vibration.vibrate(duration: 75);
     }
   }
 
@@ -353,6 +366,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                 GestureDetector(
                   onTap: () {
                     sesCal();
+
                     _login();
                   },
                   child: Container(
